@@ -287,5 +287,396 @@ Trong thời gian phát triển **7 tuần**, dự án ưu tiên hoàn thiện c
 
 Các chức năng thanh toán, thông báo và báo cáo được giới hạn ở mức cơ bản để đảm bảo tính khả thi. Các chức năng nâng cao được đưa ra ngoài phạm vi phiên bản đầu tiên nhưng hệ thống cần được thiết kế để có thể mở rộng trong tương lai.
 
+---
 
+## 6. Business Requirements
+
+
+### 6.1. BG-01 – Xây dựng nền tảng đặt xe trực tuyến toàn diện
+
+| Mã Business Requirement          | Business Requirement         | Mô tả                                                                                          |
+| -------------------------------- | ---------------------------- | ---------------------------------------------------------------------------------------------- |
+| **BG01_QuanLyTaiKhoanKhachHang** | Quản lý tài khoản khách hàng | Cho phép khách hàng đăng ký, đăng nhập và quản lý thông tin cá nhân để sử dụng dịch vụ đặt xe. |
+| **BG01_TaoYeuCauDatXe**          | Tạo yêu cầu đặt xe           | Khách hàng có thể nhập điểm đón, điểm đến, lựa chọn loại xe và gửi yêu cầu đặt xe.             |
+| **BG01_QuanLyChuyenDi**          | Quản lý chuyến đi            | Hệ thống quản lý chuyến đi từ khi yêu cầu được tạo cho đến khi chuyến hoàn thành hoặc bị hủy.  |
+| **BG01_QuanLyLichSuChuyenDi**    | Quản lý lịch sử chuyến đi    | Lưu trữ và cho phép khách hàng tra cứu các chuyến đi đã thực hiện.                             |
+| **BG01_DanhGiaTaiXe**            | Đánh giá tài xế              | Cho phép khách hàng đánh giá tài xế sau khi chuyến đi hoàn thành.                              |
+
+---
+
+### 6.2. BG-02 – Tự động hóa quá trình tìm và phân công tài xế
+
+| Mã Business Requirement       | Business Requirement      | Mô tả                                                                                                         |
+| ----------------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| **BG02_QuanLyTrangThaiTaiXe** | Quản lý trạng thái tài xế | Hệ thống ghi nhận trạng thái sẵn sàng hoặc không sẵn sàng nhận chuyến của tài xế.                             |
+| **BG02_TheoDoiViTriTaiXe**    | Theo dõi vị trí tài xế    | Ghi nhận vị trí tài xế để hỗ trợ xác định tài xế phù hợp với yêu cầu đặt xe.                                  |
+| **BG02_TimTaiXePhuHop**       | Tìm tài xế phù hợp        | Hệ thống tự động tìm và ưu tiên tài xế phù hợp dựa trên vị trí, trạng thái sẵn sàng và các tiêu chí vận hành. |
+| **BG02_PhanCongTaiXe**        | Phân công tài xế          | Gửi yêu cầu chuyến đến tài xế phù hợp và ghi nhận việc tài xế chấp nhận hoặc từ chối.                         |
+| **BG02_TimLaiTaiXe**          | Tìm lại tài xế            | Tự động tiếp tục tìm tài xế khác nếu tài xế được đề xuất từ chối hoặc không phản hồi.                         |
+| **BG02_XuLyKhongCoTaiXe**     | Xử lý khi không có tài xế | Thông báo rõ ràng cho khách hàng khi hệ thống không tìm được tài xế phù hợp.                                  |
+
+---
+
+### 6.3. BG-03 – Nâng cao trải nghiệm đặt xe và theo dõi chuyến đi
+
+| Mã Business Requirement           | Business Requirement          | Mô tả                                                                                                  |
+| --------------------------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------ |
+| **BG03_TheoDoiTrangThaiDatXe**    | Theo dõi trạng thái đặt xe    | Cho phép khách hàng biết hệ thống đang tìm tài xế hoặc đã tìm được tài xế.                             |
+| **BG03_HienThiThongTinTaiXe**     | Hiển thị thông tin tài xế     | Cung cấp thông tin tài xế đã nhận chuyến cho khách hàng.                                               |
+| **BG03_HienThiThoiGianDuKien**    | Hiển thị thời gian dự kiến    | Cung cấp thời gian dự kiến tài xế đến điểm đón cho khách hàng.                                         |
+| **BG03_TheoDoiTrangThaiChuyenDi** | Theo dõi trạng thái chuyến đi | Cho phép theo dõi các trạng thái như tài xế đã đến, đã đón khách, đang di chuyển và hoàn thành chuyến. |
+| **BG03_ThongBaoSuKienChuyenDi**   | Thông báo sự kiện chuyến đi   | Gửi thông báo cho khách hàng và tài xế khi có các sự kiện quan trọng liên quan đến chuyến đi.          |
+
+---
+
+### 6.4. BG-04 – Quản lý tập trung cước phí và thanh toán
+
+| Mã Business Requirement         | Business Requirement        | Mô tả                                                                                                 |
+| ------------------------------- | --------------------------- | ----------------------------------------------------------------------------------------------------- |
+| **BG04_TinhCuocChuyenDi**       | Tính cước chuyến đi         | Xác định số tiền khách hàng phải trả dựa trên loại dịch vụ và thông tin chuyến đi.                    |
+| **BG04_ThanhToanTienMat**       | Thanh toán tiền mặt         | Cho phép khách hàng lựa chọn thanh toán bằng tiền mặt sau khi chuyến đi hoàn thành.                   |
+| **BG04_ThanhToanDienTu**        | Thanh toán điện tử          | Cho phép thanh toán thông qua nhà cung cấp thanh toán bên ngoài.                                      |
+| **BG04_BaoVeThongTinThanhToan** | Bảo vệ thông tin thanh toán | Không lưu trực tiếp thông tin nhạy cảm của thẻ hoặc tài khoản thanh toán trong CAB System.            |
+| **BG04_XuLyThanhToanThatBai**   | Xử lý thanh toán thất bại   | Thông báo khi giao dịch thất bại và hỗ trợ thực hiện lại thanh toán theo chính sách của doanh nghiệp. |
+| **BG04_LuuLichSuGiaoDich**      | Lưu lịch sử giao dịch       | Lưu thông tin cần thiết của giao dịch để phục vụ tra cứu và quản lý.                                  |
+
+---
+
+### 6.5. BG-05 – Nâng cao hiệu quả quản lý và vận hành dịch vụ
+
+| Mã Business Requirement   | Business Requirement  | Mô tả                                                                                                   |
+| ------------------------- | --------------------- | ------------------------------------------------------------------------------------------------------- |
+| **BG05_QuanLyKhachHang**  | Quản lý khách hàng    | Cho phép nhân viên vận hành tra cứu và quản lý thông tin khách hàng.                                    |
+| **BG05_QuanLyTaiXe**      | Quản lý tài xế        | Cho phép quản lý hồ sơ, trạng thái hoạt động và thông tin liên quan đến tài xế.                         |
+| **BG05_QuanLyPhuongTien** | Quản lý phương tiện   | Quản lý thông tin phương tiện của các tài xế.                                                           |
+| **BG05_GiamSatChuyenDi**  | Giám sát chuyến đi    | Cho phép nhân viên vận hành xem và theo dõi các chuyến đang diễn ra.                                    |
+| **BG05_XuLySuCoChuyenDi** | Xử lý sự cố chuyến đi | Hỗ trợ nhân viên vận hành kiểm tra và xử lý các trường hợp chuyến đi gặp lỗi hoặc bất thường.           |
+| **BG05_TraCuuGiaoDich**   | Tra cứu giao dịch     | Cho phép nhân viên có quyền phù hợp tra cứu lịch sử giao dịch.                                          |
+| **BG05_BaoCaoHoatDong**   | Báo cáo hoạt động     | Cung cấp báo cáo về số chuyến, doanh thu, tỷ lệ hoàn thành, tỷ lệ hủy và hiệu quả hoạt động của tài xế. |
+
+---
+
+### 6.6. BG-06 – Xây dựng nền tảng ổn định, bảo mật và có khả năng mở rộng lâu dài
+
+| Mã Business Requirement     | Business Requirement    | Mô tả                                                                                                                                                  |
+| --------------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **BG06_XacThucNguoiDung**   | Xác thực người dùng     | Khách hàng và tài xế phải được xác thực trước khi sử dụng các chức năng yêu cầu tài khoản.                                                             |
+| **BG06_PhanQuyenQuanTri**   | Phân quyền quản trị     | Kiểm soát quyền truy cập để các thao tác quản trị nhạy cảm chỉ được thực hiện bởi người có quyền phù hợp.                                              |
+| **BG06_BaoVeDuLieu**        | Bảo vệ dữ liệu          | Bảo vệ thông tin cá nhân, phương tiện, vị trí và dữ liệu giao dịch của người dùng.                                                                     |
+| **BG06_LuuVetHoatDong**     | Lưu vết hoạt động       | Ghi nhận các thao tác quan trọng để hỗ trợ kiểm tra và xử lý khi có sự cố.                                                                             |
+| **BG06_DamBaoTinhSanSang**  | Đảm bảo tính sẵn sàng   | Hạn chế việc lỗi ở một thành phần như thanh toán hoặc thông báo làm gián đoạn toàn bộ hệ thống đặt xe.                                                 |
+| **BG06_HoTroMoRongHeThong** | Hỗ trợ mở rộng hệ thống | Cho phép các thành phần có thể mở rộng độc lập khi số lượng khách hàng, tài xế hoặc chuyến đi tăng.                                                    |
+| **BG06_HoTroMoRongTichHop** | Hỗ trợ mở rộng tích hợp | Kiến trúc cho phép bổ sung loại dịch vụ, phương thức thanh toán và nhà cung cấp thông báo trong tương lai mà không phải xây dựng lại toàn bộ hệ thống. |
+
+---
+
+### 6.7. Traceability Business Goal – Business Requirement
+
+| Business Goal | Business Requirements                                                                                                                                         |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **BG-01**     | BG01_QuanLyTaiKhoanKhachHang, BG01_TaoYeuCauDatXe, BG01_QuanLyChuyenDi, BG01_QuanLyLichSuChuyenDi, BG01_DanhGiaTaiXe                                          |
+| **BG-02**     | BG02_QuanLyTrangThaiTaiXe, BG02_TheoDoiViTriTaiXe, BG02_TimTaiXePhuHop, BG02_PhanCongTaiXe, BG02_TimLaiTaiXe, BG02_XuLyKhongCoTaiXe                           |
+| **BG-03**     | BG03_TheoDoiTrangThaiDatXe, BG03_HienThiThongTinTaiXe, BG03_HienThiThoiGianDuKien, BG03_TheoDoiTrangThaiChuyenDi, BG03_ThongBaoSuKienChuyenDi                 |
+| **BG-04**     | BG04_TinhCuocChuyenDi, BG04_ThanhToanTienMat, BG04_ThanhToanDienTu, BG04_BaoVeThongTinThanhToan, BG04_XuLyThanhToanThatBai, BG04_LuuLichSuGiaoDich            |
+| **BG-05**     | BG05_QuanLyKhachHang, BG05_QuanLyTaiXe, BG05_QuanLyPhuongTien, BG05_GiamSatChuyenDi, BG05_XuLySuCoChuyenDi, BG05_TraCuuGiaoDich, BG05_BaoCaoHoatDong          |
+| **BG-06**     | BG06_XacThucNguoiDung, BG06_PhanQuyenQuanTri, BG06_BaoVeDuLieu, BG06_LuuVetHoatDong, BG06_DamBaoTinhSanSang, BG06_HoTroMoRongHeThong, BG06_HoTroMoRongTichHop |
+
+
+---
+## 7. Business Process
+
+### 7.1. BP-01 – Quy trình đăng ký và quản lý tài khoản khách hàng
+
+**Business Requirements liên quan:** `BG01_QuanLyTaiKhoanKhachHang`, `BG06_XacThucNguoiDung`
+
+```mermaid
+flowchart TD
+    A([Bắt đầu]) --> B[Khách hàng đăng ký tài khoản]
+    B --> C[Nhập thông tin cá nhân]
+    C --> D{Thông tin hợp lệ?}
+
+    D -- Không --> E[Thông báo lỗi]
+    E --> C
+
+    D -- Có --> F[Tạo tài khoản khách hàng]
+    F --> G[Khách hàng đăng nhập]
+    G --> H{Xác thực thành công?}
+
+    H -- Không --> I[Thông báo đăng nhập thất bại]
+    I --> G
+
+    H -- Có --> J[Truy cập CAB System]
+    J --> K[Cập nhật hồ sơ khi cần]
+    K --> L([Kết thúc])
+```
+
+---
+
+### 7.2. BP-02 – Quy trình tạo yêu cầu đặt xe
+
+**Business Requirements liên quan:** `BG01_TaoYeuCauDatXe`, `BG01_QuanLyChuyenDi`
+
+```mermaid
+flowchart TD
+    A([Bắt đầu]) --> B[Khách hàng nhập điểm đón]
+    B --> C[Nhập điểm đến]
+    C --> D[Chọn loại xe]
+    D --> E[Hệ thống kiểm tra thông tin]
+
+    E --> F{Thông tin hợp lệ?}
+
+    F -- Không --> G[Yêu cầu khách hàng chỉnh sửa]
+    G --> B
+
+    F -- Có --> H[Hiển thị thông tin chuyến]
+    H --> I[Khách hàng xác nhận đặt xe]
+    I --> J[Tạo yêu cầu chuyến đi]
+    J --> K[Trạng thái: Đang tìm tài xế]
+    K --> L([Chuyển sang quy trình tìm tài xế])
+```
+
+---
+
+### 7.3. BP-03 – Quy trình tìm và phân công tài xế
+
+**Business Requirements liên quan:** `BG02_QuanLyTrangThaiTaiXe`, `BG02_TheoDoiViTriTaiXe`, `BG02_TimTaiXePhuHop`, `BG02_PhanCongTaiXe`, `BG02_TimLaiTaiXe`, `BG02_XuLyKhongCoTaiXe`
+
+```mermaid
+flowchart TD
+    A([Nhận yêu cầu đặt xe]) --> B[Tìm tài xế đang sẵn sàng]
+    B --> C[Lọc theo vị trí và loại xe]
+    C --> D[Xếp ưu tiên tài xế phù hợp]
+    D --> E{Có tài xế phù hợp?}
+
+    E -- Không --> F[Thông báo không tìm được tài xế]
+    F --> G[Đóng yêu cầu tìm tài xế]
+    G --> Z([Kết thúc])
+
+    E -- Có --> H[Gửi yêu cầu chuyến cho tài xế]
+    H --> I{Tài xế phản hồi?}
+
+    I -- Không --> J[Hết thời gian phản hồi]
+    J --> K[Tìm tài xế tiếp theo]
+    K --> E
+
+    I -- Có --> L{Tài xế chấp nhận?}
+
+    L -- Không --> K
+    L -- Có --> M[Phân công tài xế]
+    M --> N[Cập nhật thông tin chuyến]
+    N --> O[Thông báo cho khách hàng]
+    O --> P([Bắt đầu thực hiện chuyến])
+```
+
+---
+
+### 7.4. BP-04 – Quy trình thực hiện và theo dõi chuyến đi
+
+**Business Requirements liên quan:** `BG01_QuanLyChuyenDi`, `BG03_HienThiThongTinTaiXe`, `BG03_HienThiThoiGianDuKien`, `BG03_TheoDoiTrangThaiChuyenDi`
+
+```mermaid
+flowchart TD
+    A([Tài xế nhận chuyến]) --> B[Hiển thị thông tin tài xế cho khách hàng]
+    B --> C[Hiển thị thời gian dự kiến đến]
+    C --> D[Tài xế di chuyển đến điểm đón]
+    D --> E[Tài xế cập nhật: Đã đến điểm đón]
+
+    E --> F[Khách hàng lên xe]
+    F --> G[Tài xế cập nhật: Đã đón khách]
+    G --> H[Tài xế bắt đầu chuyến]
+    H --> I[Cập nhật: Đang di chuyển]
+
+    I --> J[Hệ thống theo dõi trạng thái chuyến]
+    J --> K[Tài xế đến điểm đến]
+    K --> L[Tài xế xác nhận hoàn thành]
+    L --> M[Cập nhật: Hoàn thành]
+    M --> N([Chuyển sang tính cước])
+```
+
+---
+
+### 7.5. BP-05 – Quy trình tính cước và thanh toán
+
+**Business Requirements liên quan:** `BG04_TinhCuocChuyenDi`, `BG04_ThanhToanTienMat`, `BG04_ThanhToanDienTu`, `BG04_XuLyThanhToanThatBai`, `BG04_LuuLichSuGiaoDich`
+
+```mermaid
+flowchart TD
+    A([Chuyến đi hoàn thành]) --> B[Thu thập thông tin chuyến]
+    B --> C[Tính cước chuyến đi]
+    C --> D[Hiển thị số tiền cần thanh toán]
+    D --> E{Phương thức thanh toán?}
+
+    E -- Tiền mặt --> F[Khách hàng thanh toán tiền mặt]
+    F --> G[Ghi nhận thanh toán thành công]
+
+    E -- Điện tử --> H[Gửi yêu cầu đến Payment Provider]
+    H --> I{Thanh toán thành công?}
+
+    I -- Có --> G
+
+    I -- Không --> J[Thông báo thanh toán thất bại]
+    J --> K{Thử lại?}
+
+    K -- Có --> H
+    K -- Không --> L[Ghi nhận trạng thái thanh toán chưa thành công]
+
+    G --> M[Lưu thông tin giao dịch]
+    L --> M
+    M --> N([Kết thúc])
+```
+
+---
+
+### 7.6. BP-06 – Quy trình gửi thông báo
+
+**Business Requirements liên quan:** `BG03_ThongBaoSuKienChuyenDi`
+
+```mermaid
+flowchart TD
+    A([Phát sinh sự kiện]) --> B{Loại sự kiện}
+
+    B -->|Đặt xe| C[Yêu cầu đặt xe được tiếp nhận]
+    B -->|Nhận chuyến| D[Tài xế đã nhận chuyến]
+    B -->|Đến điểm đón| E[Tài xế đã đến điểm đón]
+    B -->|Hoàn thành| F[Chuyến đi đã hoàn thành]
+    B -->|Thanh toán| G[Có kết quả thanh toán]
+
+    C --> H[Tạo nội dung thông báo]
+    D --> H
+    E --> H
+    F --> H
+    G --> H
+
+    H --> I[Gửi qua Notification Provider]
+    I --> J{Gửi thành công?}
+
+    J -- Có --> K[Ghi nhận kết quả gửi]
+    J -- Không --> L[Ghi nhận lỗi thông báo]
+
+    K --> M([Kết thúc])
+    L --> M
+```
+
+---
+
+### 7.7. BP-07 – Quy trình xem lịch sử và đánh giá tài xế
+
+**Business Requirements liên quan:** `BG01_QuanLyLichSuChuyenDi`, `BG01_DanhGiaTaiXe`
+
+```mermaid
+flowchart TD
+    A([Bắt đầu]) --> B[Khách hàng mở lịch sử chuyến đi]
+    B --> C[Hệ thống lấy danh sách chuyến]
+    C --> D[Hiển thị lịch sử chuyến]
+
+    D --> E[Khách hàng chọn một chuyến]
+    E --> F[Hiển thị chi tiết chuyến]
+    F --> G{Chuyến đã hoàn thành?}
+
+    G -- Không --> H[Không cho phép đánh giá]
+    H --> Z([Kết thúc])
+
+    G -- Có --> I{Đã đánh giá?}
+
+    I -- Có --> J[Hiển thị đánh giá đã gửi]
+    J --> Z
+
+    I -- Chưa --> K[Khách hàng nhập đánh giá tài xế]
+    K --> L[Gửi đánh giá]
+    L --> M[Lưu đánh giá]
+    M --> N[Cập nhật thông tin đánh giá tài xế]
+    N --> Z
+```
+
+---
+
+### 7.8. BP-08 – Quy trình quản lý và xử lý chuyến đi của nhân viên vận hành
+
+**Business Requirements liên quan:** `BG05_QuanLyKhachHang`, `BG05_QuanLyTaiXe`, `BG05_QuanLyPhuongTien`, `BG05_GiamSatChuyenDi`, `BG05_XuLySuCoChuyenDi`, `BG05_TraCuuGiaoDich`
+
+```mermaid
+flowchart TD
+    A([Bắt đầu]) --> B[Nhân viên vận hành đăng nhập]
+    B --> C[Hệ thống xác thực và kiểm tra quyền]
+    C --> D{Có quyền truy cập?}
+
+    D -- Không --> E[Từ chối truy cập]
+    E --> Z([Kết thúc])
+
+    D -- Có --> F[Mở giao diện vận hành]
+    F --> G{Chọn chức năng}
+
+    G -->|Khách hàng| H[Tra cứu và quản lý khách hàng]
+    G -->|Tài xế| I[Tra cứu và quản lý tài xế]
+    G -->|Phương tiện| J[Tra cứu và quản lý phương tiện]
+    G -->|Chuyến đi| K[Theo dõi chuyến đang diễn ra]
+    G -->|Giao dịch| L[Tra cứu lịch sử giao dịch]
+
+    K --> M{Chuyến gặp sự cố?}
+    M -- Không --> N[Tiếp tục giám sát]
+    M -- Có --> O[Kiểm tra thông tin sự cố]
+    O --> P[Thực hiện biện pháp xử lý]
+    P --> Q[Lưu kết quả xử lý]
+
+    H --> R([Hoàn thành])
+    I --> R
+    J --> R
+    L --> R
+    N --> R
+    Q --> R
+```
+
+---
+
+### 7.9. BP-09 – Quy trình báo cáo và giám sát hoạt động
+
+**Business Requirements liên quan:** `BG05_BaoCaoHoatDong`, `BG06_LuuVetHoatDong`
+
+```mermaid
+flowchart TD
+    A([Bắt đầu]) --> B[Người có quyền truy cập báo cáo]
+    B --> C[Chọn khoảng thời gian báo cáo]
+    C --> D[Hệ thống tổng hợp dữ liệu]
+
+    D --> E[Tính tổng số chuyến]
+    D --> F[Tính doanh thu]
+    D --> G[Tính tỷ lệ hoàn thành]
+    D --> H[Tính tỷ lệ hủy]
+    D --> I[Tổng hợp hiệu quả tài xế]
+
+    E --> J[Tạo báo cáo]
+    F --> J
+    G --> J
+    H --> J
+    I --> J
+
+    J --> K[Hiển thị kết quả]
+    K --> L[Người dùng xem báo cáo]
+    L --> M[Ghi nhận thao tác quan trọng]
+    M --> N([Kết thúc])
+```
+
+---
+
+### 7.10. Liên kết Business Process với Business Requirements
+
+| Business Process | Nội dung chính                                 | Business Goal |
+| ---------------- | ---------------------------------------------- | ------------- |
+| **BP-01**        | Đăng ký và quản lý tài khoản khách hàng        | BG-01, BG-06  |
+| **BP-02**        | Tạo yêu cầu đặt xe                             | BG-01         |
+| **BP-03**        | Tìm và phân công tài xế                        | BG-02         |
+| **BP-04**        | Thực hiện và theo dõi chuyến đi                | BG-01, BG-03  |
+| **BP-05**        | Tính cước và thanh toán                        | BG-04         |
+| **BP-06**        | Gửi thông báo                                  | BG-03         |
+| **BP-07**        | Lịch sử chuyến và đánh giá tài xế              | BG-01         |
+| **BP-08**        | Quản lý và xử lý chuyến của nhân viên vận hành | BG-05, BG-06  |
+| **BP-09**        | Báo cáo và giám sát hoạt động                  | BG-05, BG-06  |
+
+### 7.11. Luồng nghiệp vụ tổng thể
+
+9 quy trình trên kết hợp thành luồng nghiệp vụ chính của CAB System:
+
+**Đăng ký/Đăng nhập → Đặt xe → Tìm tài xế → Thực hiện chuyến → Tính cước & Thanh toán → Đánh giá → Quản lý & Báo cáo**
+
+Trong đó, **Notification** hoạt động xuyên suốt quá trình để thông báo các sự kiện quan trọng cho Customer và Driver.
 
