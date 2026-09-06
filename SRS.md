@@ -1,4 +1,4 @@
-## 2. Stakeholders
+## 1. Stakeholders
 
 Các bên liên quan (Stakeholders) của hệ thống CAB System được xác định như sau:
 
