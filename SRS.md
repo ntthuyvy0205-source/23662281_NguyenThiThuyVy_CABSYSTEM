@@ -216,5 +216,120 @@ Do thời gian xây dựng và triển khai sản phẩm là **7 tuần**, các 
 | **BG-05**     | **Should Have** | Quan trọng đối với quản lý và vận hành nhưng một số chức năng báo cáo nâng cao có thể triển khai sau các chức năng cốt lõi.                                        |
 | **BG-06**     | **Should Have** | Kiến trúc, bảo mật và khả năng mở rộng cần được xem xét ngay từ đầu, trong khi một số khả năng mở rộng nâng cao có thể tiếp tục hoàn thiện sau phiên bản đầu tiên. |
 
+
+## 4. Phạm vi phát triển hệ thống
+
+### 4.1. Xác định phạm vi
+
+Dựa trên các Business Goals đã xác định và giới hạn thời gian phát triển **7 tuần**, CAB System tập trung triển khai các module cốt lõi cần thiết để hoàn thành quy trình đặt xe.
+
+Một số module có phạm vi lớn sẽ được giới hạn ở các chức năng cần thiết trong phiên bản đầu tiên. Các chức năng nâng cao và khả năng mở rộng sẽ được xem xét trong các phiên bản tiếp theo.
+
+### 4.2. Phạm vi các Module
+
+| Mã      | Module                               | Business Goal liên quan | Phạm vi           | Nội dung triển khai                                                                                                                   |
+| ------- | ------------------------------------ | ----------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| **M01** | **User & Authentication**            | BG-01, BG-06            | **In Scope**      | Đăng ký, đăng nhập, cập nhật hồ sơ và xác thực người dùng; hỗ trợ Customer, Driver và nhân viên quản trị/vận hành.                    |
+| **M02** | **Booking Management**               | BG-01                   | **In Scope**      | Nhập điểm đón, điểm đến, chọn loại xe, tạo yêu cầu đặt xe và quản lý yêu cầu đặt xe.                                                  |
+| **M03** | **Driver & Vehicle Management**      | BG-01, BG-02            | **In Scope**      | Quản lý hồ sơ tài xế, thông tin phương tiện, trạng thái hoạt động và vị trí tài xế.                                                   |
+| **M04** | **Driver Matching & Dispatch**       | BG-02                   | **In Scope**      | Tìm và ưu tiên tài xế khả dụng gần khách hàng; tiếp tục tìm tài xế khác khi tài xế trước từ chối hoặc không phản hồi.                 |
+| **M05** | **Trip Management & Tracking**       | BG-01, BG-03            | **In Scope**      | Quản lý và theo dõi các trạng thái của chuyến từ khi tìm tài xế đến khi hoàn thành hoặc hủy chuyến.                                   |
+| **M06** | **Fare & Payment**                   | BG-04                   | **Limited Scope** | Tính cước cơ bản; hỗ trợ tiền mặt và tích hợp **01 nhà cung cấp thanh toán điện tử**.                                                 |
+| **M07** | **Notification**                     | BG-03                   | **Limited Scope** | Gửi thông báo cho Customer và Driver tại các sự kiện quan trọng; phiên bản đầu chỉ triển khai **01 kênh thông báo chính**.            |
+| **M08** | **Trip History & Rating**            | BG-01, BG-03            | **In Scope**      | Cho phép khách hàng xem lịch sử chuyến đi và đánh giá tài xế sau khi chuyến hoàn thành.                                               |
+| **M09** | **Operation & Administration**       | BG-05, BG-06            | **In Scope**      | Quản lý Customer, Driver, Vehicle và Trip; theo dõi chuyến đang diễn ra, phân quyền cơ bản và hỗ trợ xử lý sự cố.                     |
+| **M10** | **Reporting & Analytics**            | BG-05                   | **Limited Scope** | Cung cấp báo cáo cơ bản về số chuyến, doanh thu, tỷ lệ hoàn thành, tỷ lệ hủy và hiệu quả hoạt động của tài xế.                        |
+| **M11** | **Advanced Services & Integrations** | BG-06                   | **Out of Scope**  | Các loại dịch vụ nâng cao, nhiều Payment Provider, nhiều Notification Provider và các tích hợp mở rộng được để lại cho phiên bản sau. |
+
+---
+
+### 4.3. Phân loại phạm vi
+
+#### In Scope
+
+Các module được ưu tiên phát triển đầy đủ trong phạm vi dự án:
+
+* **M01 – User & Authentication**
+* **M02 – Booking Management**
+* **M03 – Driver & Vehicle Management**
+* **M04 – Driver Matching & Dispatch**
+* **M05 – Trip Management & Tracking**
+* **M08 – Trip History & Rating**
+* **M09 – Operation & Administration**
+
+Đây là các module cần thiết để đảm bảo CAB System có thể thực hiện hoàn chỉnh quy trình nghiệp vụ chính:
+
+**Đặt xe → Tìm tài xế → Nhận chuyến → Thực hiện chuyến → Hoàn thành chuyến.**
+
+#### Limited Scope
+
+Do giới hạn thời gian phát triển **7 tuần**, các module sau chỉ triển khai các chức năng cần thiết:
+
+* **M06 – Fare & Payment:** chỉ triển khai cách tính cước cơ bản, thanh toán tiền mặt và **01 Payment Provider**.
+* **M07 – Notification:** chỉ triển khai **01 kênh thông báo chính**.
+* **M10 – Reporting & Analytics:** chỉ cung cấp các báo cáo và thống kê cơ bản theo yêu cầu nghiệp vụ.
+
+#### Out of Scope
+
+Các chức năng sau chưa triển khai trong phiên bản hiện tại:
+
+* Tích hợp nhiều Payment Provider.
+* Tích hợp đồng thời nhiều kênh Notification.
+* Thuật toán AI/ML nâng cao để phân công tài xế.
+* Dynamic Pricing hoặc Surge Pricing phức tạp.
+* Advanced Analytics và Business Intelligence.
+* Các loại dịch vụ vận chuyển mới ngoài phạm vi dịch vụ ban đầu.
+* Các tích hợp bên thứ ba khác chưa cần thiết cho phiên bản đầu tiên.
+
+Các chức năng trên có thể được bổ sung trong các phiên bản tiếp theo nhờ kiến trúc hệ thống có khả năng mở rộng.
+
+---
+
+### 4.4. Liên kết Business Goals với Module
+
+| Business Goal                                                                 | Module đáp ứng          |
+| ----------------------------------------------------------------------------- | ----------------------- |
+| **BG-01 – Xây dựng nền tảng đặt xe trực tuyến toàn diện**                     | M01, M02, M03, M05, M08 |
+| **BG-02 – Tự động hóa quá trình tìm và phân công tài xế**                     | M03, M04                |
+| **BG-03 – Nâng cao trải nghiệm đặt xe và theo dõi chuyến đi**                 | M05, M07, M08           |
+| **BG-04 – Quản lý tập trung cước phí và thanh toán**                          | M06                     |
+| **BG-05 – Nâng cao hiệu quả quản lý và vận hành dịch vụ**                     | M09, M10                |
+| **BG-06 – Xây dựng nền tảng ổn định, bảo mật và có khả năng mở rộng lâu dài** | M01, M09, M11           |
+
+---
+
+### 4.5. Sơ đồ phạm vi Module
+
+```mermaid
+flowchart TB
+
+    CAB["CAB System<br/>Phạm vi phát triển 7 tuần"]
+
+    CAB --> CORE["In Scope"]
+    CAB --> LIMITED["Limited Scope"]
+    CAB --> FUTURE["Out of Scope / Future"]
+
+    CORE --> M01["M01<br/>User & Authentication"]
+    CORE --> M02["M02<br/>Booking Management"]
+    CORE --> M03["M03<br/>Driver & Vehicle"]
+    CORE --> M04["M04<br/>Driver Matching"]
+    CORE --> M05["M05<br/>Trip & Tracking"]
+    CORE --> M08["M08<br/>Trip History & Rating"]
+    CORE --> M09["M09<br/>Operation & Admin"]
+
+    LIMITED --> M06["M06<br/>Fare & Payment"]
+    LIMITED --> M07["M07<br/>Notification"]
+    LIMITED --> M10["M10<br/>Basic Reporting"]
+
+    FUTURE --> M11["M11<br/>Advanced Services<br/>& Integrations"]
+```
+
+### 4.6. Kết luận phạm vi
+
+Trong thời gian phát triển **7 tuần**, dự án ưu tiên hoàn thiện luồng nghiệp vụ đặt xe cốt lõi và các chức năng cần thiết cho Customer, Driver và Operation Staff.
+
+Các chức năng thanh toán, thông báo và báo cáo được triển khai ở mức cơ bản nhằm đảm bảo tính khả thi của dự án. Các chức năng nâng cao được đưa ra ngoài phạm vi phiên bản đầu tiên nhưng kiến trúc hệ thống cần được thiết kế để có thể bổ sung trong tương lai.
+
+
 ```
 ```
