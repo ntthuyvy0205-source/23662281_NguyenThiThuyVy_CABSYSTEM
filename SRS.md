@@ -134,3 +134,21 @@ Các Stakeholders cần được ưu tiên trong quá trình phân tích yêu c�
 5. **Ban lãnh đạo** – xác định mục tiêu kinh doanh và yêu cầu tổng thể của dự án.
 
 Các hệ thống bên ngoài gồm **Payment Provider** và **Notification Provider** là các Stakeholders quan trọng vì CAB System cần tích hợp với các dịch vụ này để thực hiện thanh toán và gửi thông báo.
+
+
+---
+
+## 3. Business Goals
+
+Các yêu cầu quan trọng của khách hàng được chuyển đổi thành các mục tiêu nghiệp vụ (Business Goals) như sau:
+
+| Mã | Business Goal | Mô tả |
+|---|---|---|
+| **BG-01** | Xây dựng nền tảng CAB phục vụ quy trình đặt xe toàn diện | Hệ thống hỗ trợ xuyên suốt quy trình từ khách hàng tạo yêu cầu đặt xe, tìm và phân công tài xế, thực hiện chuyến đi, tính cước, thanh toán đến đánh giá sau chuyến. |
+| **BG-02** | Tự động hóa quá trình tìm và phân công tài xế | Hệ thống tự động tìm và ưu tiên tài xế phù hợp dựa trên vị trí, trạng thái sẵn sàng và các tiêu chí vận hành, đồng thời tự động tìm tài xế khác khi tài xế trước từ chối hoặc không phản hồi. |
+| **BG-03** | Nâng cao trải nghiệm và khả năng theo dõi chuyến đi | Khách hàng có thể theo dõi trạng thái chuyến đi, tài xế được phân công, thời gian dự kiến tài xế đến và nhận thông báo về các sự kiện quan trọng của chuyến. |
+| **BG-04** | Quản lý tập trung cước phí và thanh toán | Hệ thống hỗ trợ tính cước, quản lý giao dịch, thanh toán tiền mặt và thanh toán điện tử thông qua nhà cung cấp bên ngoài, đồng thời đảm bảo an toàn thông tin thanh toán. |
+| **BG-05** | Nâng cao hiệu quả quản lý và vận hành | Cung cấp khả năng quản lý khách hàng, tài xế, phương tiện, chuyến đi và giao dịch; hỗ trợ nhân viên vận hành theo dõi và xử lý các trường hợp bất thường. |
+| **BG-06** | Hỗ trợ giám sát và ra quyết định kinh doanh | Cung cấp báo cáo về số lượng chuyến, doanh thu, tỷ lệ hoàn thành, tỷ lệ hủy và hiệu quả hoạt động của tài xế để hỗ trợ ban lãnh đạo theo dõi hoạt động kinh doanh. |
+| **BG-07** | Xây dựng nền tảng ổn định, bảo mật và có khả năng mở rộng | Hệ thống phải hoạt động ổn định khi nhu cầu tăng cao, bảo vệ dữ liệu người dùng và giao dịch, đồng thời cho phép các thành phần mở rộng độc lập mà không làm gián đoạn toàn bộ hệ thống. |
+| **BG-08** | Đảm bảo khả năng phát triển và mở rộng lâu dài | Kiến trúc hệ thống phải linh hoạt để có thể bổ sung loại dịch vụ, phương thức thanh toán, kênh thông báo và thay đổi các thành phần kỹ thuật trong tương lai mà không cần xây dựng lại toàn bộ hệ thống. |
