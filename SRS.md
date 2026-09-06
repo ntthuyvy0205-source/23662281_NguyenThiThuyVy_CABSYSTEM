@@ -140,15 +140,53 @@ Các hệ thống bên ngoài gồm **Payment Provider** và **Notification Prov
 
 ## 3. Business Goals
 
-Các yêu cầu quan trọng của khách hàng được chuyển đổi thành các mục tiêu nghiệp vụ (Business Goals) như sau:
+### 3.1. Mục tiêu nghiệp vụ
 
-| Mã | Business Goal | Mô tả |
-|---|---|---|
-| **BG-01** | Xây dựng nền tảng CAB phục vụ quy trình đặt xe toàn diện | Hệ thống hỗ trợ xuyên suốt quy trình từ khách hàng tạo yêu cầu đặt xe, tìm và phân công tài xế, thực hiện chuyến đi, tính cước, thanh toán đến đánh giá sau chuyến. |
-| **BG-02** | Tự động hóa quá trình tìm và phân công tài xế | Hệ thống tự động tìm và ưu tiên tài xế phù hợp dựa trên vị trí, trạng thái sẵn sàng và các tiêu chí vận hành, đồng thời tự động tìm tài xế khác khi tài xế trước từ chối hoặc không phản hồi. |
-| **BG-03** | Nâng cao trải nghiệm và khả năng theo dõi chuyến đi | Khách hàng có thể theo dõi trạng thái chuyến đi, tài xế được phân công, thời gian dự kiến tài xế đến và nhận thông báo về các sự kiện quan trọng của chuyến. |
-| **BG-04** | Quản lý tập trung cước phí và thanh toán | Hệ thống hỗ trợ tính cước, quản lý giao dịch, thanh toán tiền mặt và thanh toán điện tử thông qua nhà cung cấp bên ngoài, đồng thời đảm bảo an toàn thông tin thanh toán. |
-| **BG-05** | Nâng cao hiệu quả quản lý và vận hành | Cung cấp khả năng quản lý khách hàng, tài xế, phương tiện, chuyến đi và giao dịch; hỗ trợ nhân viên vận hành theo dõi và xử lý các trường hợp bất thường. |
-| **BG-06** | Hỗ trợ giám sát và ra quyết định kinh doanh | Cung cấp báo cáo về số lượng chuyến, doanh thu, tỷ lệ hoàn thành, tỷ lệ hủy và hiệu quả hoạt động của tài xế để hỗ trợ ban lãnh đạo theo dõi hoạt động kinh doanh. |
-| **BG-07** | Xây dựng nền tảng ổn định, bảo mật và có khả năng mở rộng | Hệ thống phải hoạt động ổn định khi nhu cầu tăng cao, bảo vệ dữ liệu người dùng và giao dịch, đồng thời cho phép các thành phần mở rộng độc lập mà không làm gián đoạn toàn bộ hệ thống. |
-| **BG-08** | Đảm bảo khả năng phát triển và mở rộng lâu dài | Kiến trúc hệ thống phải linh hoạt để có thể bổ sung loại dịch vụ, phương thức thanh toán, kênh thông báo và thay đổi các thành phần kỹ thuật trong tương lai mà không cần xây dựng lại toàn bộ hệ thống. |
+Dựa trên yêu cầu của Công ty ABC, CAB System được xây dựng nhằm giải quyết những hạn chế của quy trình đặt xe hiện tại, nâng cao hiệu quả vận hành và tạo nền tảng có khả năng phát triển lâu dài.
+
+Các mục tiêu nghiệp vụ chính của hệ thống được xác định như sau:
+
+| Mã        | Business Goal                                                             | Mô tả                                                                                                                                                                                                                                           |
+| --------- | ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **BG-01** | **Xây dựng nền tảng đặt xe trực tuyến toàn diện**                         | Xây dựng CAB System hỗ trợ toàn bộ quy trình nghiệp vụ từ khi khách hàng tạo yêu cầu đặt xe, tìm và phân công tài xế, thực hiện chuyến đi, tính cước, thanh toán đến đánh giá sau chuyến.                                                       |
+| **BG-02** | **Tự động hóa quá trình tìm và phân công tài xế**                         | Giảm sự phụ thuộc vào việc phân công thủ công bằng cách tự động xác định và ưu tiên tài xế phù hợp dựa trên vị trí, trạng thái sẵn sàng và các tiêu chí vận hành; tiếp tục tìm tài xế khác khi tài xế được đề xuất không nhận chuyến.           |
+| **BG-03** | **Nâng cao trải nghiệm đặt xe và theo dõi chuyến đi**                     | Cung cấp cho khách hàng khả năng theo dõi quá trình tìm tài xế, thông tin tài xế nhận chuyến, thời gian dự kiến đến và trạng thái chuyến đi; đồng thời cung cấp thông báo kịp thời trong các giai đoạn quan trọng.                              |
+| **BG-04** | **Quản lý tập trung cước phí và thanh toán**                              | Xây dựng cơ chế tính cước và quản lý giao dịch tập trung, hỗ trợ thanh toán tiền mặt và thanh toán điện tử thông qua nhà cung cấp bên ngoài, góp phần nâng cao tính chính xác và an toàn trong quá trình thanh toán.                            |
+| **BG-05** | **Nâng cao hiệu quả quản lý và vận hành dịch vụ**                         | Hỗ trợ doanh nghiệp quản lý tập trung khách hàng, tài xế, phương tiện, chuyến đi và giao dịch; giúp nhân viên vận hành giám sát hoạt động, xử lý sự cố và cung cấp dữ liệu báo cáo phục vụ công tác quản lý.                                    |
+| **BG-06** | **Xây dựng nền tảng CAB ổn định, bảo mật và có khả năng mở rộng lâu dài** | Đảm bảo hệ thống có thể phục vụ số lượng lớn khách hàng và tài xế, duy trì hoạt động khi một thành phần gặp sự cố, bảo vệ dữ liệu quan trọng và cho phép mở rộng thêm loại dịch vụ, phương thức thanh toán hoặc kênh thông báo trong tương lai. |
+
+---
+
+### 3.2. Liên kết Business Goals với Stakeholders
+
+| Business Goal | Stakeholders liên quan chính                  |
+| ------------- | --------------------------------------------- |
+| **BG-01**     | Customer, Driver, Operation Staff, Management |
+| **BG-02**     | Customer, Driver, Operation Staff             |
+| **BG-03**     | Customer, Driver, Notification Provider       |
+| **BG-04**     | Customer, Operation Staff, Payment Provider   |
+| **BG-05**     | Operation Staff, Administrator, Management    |
+| **BG-06**     | Administrator, Management, Development Team   |
+
+---
+
+### 3.3. Sơ đồ Business Goals
+
+```mermaid
+flowchart TB
+    CAB["CAB System"]
+
+    BG01["BG-01<br/>Nền tảng đặt xe<br/>toàn diện"]
+    BG02["BG-02<br/>Tự động tìm và<br/>phân công tài xế"]
+    BG03["BG-03<br/>Nâng cao trải nghiệm<br/>và theo dõi chuyến"]
+    BG04["BG-04<br/>Quản lý cước phí<br/>và thanh toán"]
+    BG05["BG-05<br/>Nâng cao hiệu quả<br/>quản lý và vận hành"]
+    BG06["BG-06<br/>Ổn định, bảo mật<br/>và mở rộng lâu dài"]
+
+    CAB --> BG01
+    CAB --> BG02
+    CAB --> BG03
+    CAB --> BG04
+    CAB --> BG05
+    CAB --> BG06
+```
