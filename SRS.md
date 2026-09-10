@@ -114,11 +114,6 @@ flowchart LR
 
 ---
 
-### 1.6. Kết luận
-
-CAB System có **10 Stakeholders chính**, bao gồm người dùng, bộ phận vận hành và quản lý của Công ty ABC, các nhà cung cấp dịch vụ bên ngoài và nhóm phát triển dự án.
-
-Việc xác định rõ từng Stakeholder là cơ sở để tiếp tục phân tích **Stakeholder Matrix, Business Goals, Actors, Business Requirements và các yêu cầu hệ thống** trong các phần tiếp theo.
 
 
 ## 2. STAKEHOLDER MATRIX
