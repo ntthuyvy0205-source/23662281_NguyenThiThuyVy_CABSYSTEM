@@ -1,1 +1,89 @@
+openapi: 3.0.3
 
+info:
+  title: Get Profile API
+  version: 1.0.0
+  description: >
+    API dùng để lấy thông tin cá nhân của người dùng
+    đang đăng nhập trong hệ thống CAB.
+
+servers:
+  - url: http://localhost:3000/api
+    description: Local development server
+
+paths:
+  /users/me:
+    get:
+      tags:
+        - Users
+
+      summary: Xem thông tin cá nhân
+
+      description: >
+        Cho phép người dùng đang đăng nhập xem thông tin
+        tài khoản cá nhân của mình.
+
+      security:
+        - bearerAuth: []
+
+      responses:
+
+        '200':
+          description: Lấy thông tin cá nhân thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    type: string
+                    example: U001
+
+                  fullName:
+                    type: string
+                    example: Nguyen Van A
+
+                  phone:
+                    type: string
+                    example: "0901234567"
+
+                  email:
+                    type: string
+                    format: email
+                    example: nguyenvana@gmail.com
+
+                  accountType:
+                    type: string
+                    example: CUSTOMER
+
+                  status:
+                    type: string
+                    example: ACTIVE
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc token không hợp lệ
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Người dùng chưa được xác thực
+
+        '404':
+          description: Không tìm thấy thông tin người dùng
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Không tìm thấy người dùng
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
