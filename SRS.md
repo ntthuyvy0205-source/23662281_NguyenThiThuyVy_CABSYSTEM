@@ -365,165 +365,122 @@ COMPLETED
 
 # B10. ENTITY MODEL VÀ ERD
 
-## 10.1. Danh sách thực thể
+## 10.1. Các thực thể
 
-| Mã | Entity | Mô tả |
-|---|---|---|
-| E01 | User | Lưu thông tin tài khoản chung của người dùng trong hệ thống. |
-| E02 | Customer | Lưu thông tin riêng của khách hàng. |
-| E03 | Driver | Lưu thông tin riêng của tài xế và trạng thái hoạt động. |
-| E04 | Vehicle | Lưu thông tin phương tiện thuộc Driver. |
-| E05 | VehicleType | Lưu các loại phương tiện được hệ thống hỗ trợ. |
-| E06 | DriverLocation | Lưu vị trí Driver tại các thời điểm cập nhật. |
-| E07 | Trip | Lưu thông tin chuyến đi từ khi tạo đến khi hoàn thành hoặc bị hủy. |
-| E08 | TripOffer | Lưu yêu cầu chuyến được gửi đến Driver và kết quả phản hồi. |
-| E09 | Payment | Lưu thông tin giao dịch thanh toán của Trip. |
-| E10 | Rating | Lưu đánh giá của Customer đối với Driver sau khi Trip hoàn thành. |
+Dựa trên các Business Requirement và Functional Requirement của CAB System, hệ thống gồm các thực thể chính sau:
 
----
-
-## 10.2. Thuộc tính chính của các thực thể
-
-### E01 – User
-
-| Thuộc tính | Kiểu dữ liệu | Mô tả |
-|---|---|---|
-| userId | String | Khóa chính của User. |
-| fullName | String | Họ tên người dùng. |
-| phone | String | Số điện thoại đăng nhập. |
-| email | String | Email người dùng. |
-| passwordHash | String | Mật khẩu đã được mã hóa. |
-| status | String | Trạng thái tài khoản. |
-| createdAt | DateTime | Thời điểm tạo tài khoản. |
-
-### E02 – Customer
-
-| Thuộc tính | Kiểu dữ liệu | Mô tả |
-|---|---|---|
-| customerId | String | Khóa chính của Customer. |
-| userId | String | Khóa ngoại tham chiếu User. |
-
-### E03 – Driver
-
-| Thuộc tính | Kiểu dữ liệu | Mô tả |
-|---|---|---|
-| driverId | String | Khóa chính của Driver. |
-| userId | String | Khóa ngoại tham chiếu User. |
-| availabilityStatus | String | Trạng thái AVAILABLE hoặc UNAVAILABLE. |
-| ratingAverage | Decimal | Điểm đánh giá trung bình của Driver. |
-
-### E04 – Vehicle
-
-| Thuộc tính | Kiểu dữ liệu | Mô tả |
-|---|---|---|
-| vehicleId | String | Khóa chính của Vehicle. |
-| driverId | String | Khóa ngoại tham chiếu Driver. |
-| vehicleTypeId | String | Khóa ngoại tham chiếu VehicleType. |
-| licensePlate | String | Biển số xe. |
-| brand | String | Hãng xe. |
-| model | String | Mẫu xe. |
-| status | String | Trạng thái phương tiện. |
-
-### E05 – VehicleType
-
-| Thuộc tính | Kiểu dữ liệu | Mô tả |
-|---|---|---|
-| vehicleTypeId | String | Khóa chính của VehicleType. |
-| name | String | Tên loại xe. |
-| status | String | Trạng thái sử dụng. |
-
-### E06 – DriverLocation
-
-| Thuộc tính | Kiểu dữ liệu | Mô tả |
-|---|---|---|
-| locationId | String | Khóa chính của DriverLocation. |
-| driverId | String | Khóa ngoại tham chiếu Driver. |
-| latitude | Decimal | Vĩ độ. |
-| longitude | Decimal | Kinh độ. |
-| recordedAt | DateTime | Thời điểm ghi nhận vị trí. |
-
-### E07 – Trip
-
-| Thuộc tính | Kiểu dữ liệu | Mô tả |
-|---|---|---|
-| tripId | String | Khóa chính của Trip. |
-| customerId | String | Customer tạo Trip. |
-| driverId | String, nullable | Driver thực hiện Trip sau khi chấp nhận. |
-| vehicleId | String, nullable | Vehicle được sử dụng cho Trip. |
-| vehicleTypeId | String | Loại Vehicle Customer lựa chọn. |
-| pickupAddress | String | Điểm đón. |
-| pickupLatitude | Decimal | Vĩ độ điểm đón. |
-| pickupLongitude | Decimal | Kinh độ điểm đón. |
-| destinationAddress | String | Điểm đến. |
-| destinationLatitude | Decimal | Vĩ độ điểm đến. |
-| destinationLongitude | Decimal | Kinh độ điểm đến. |
-| status | String | Trạng thái hiện tại của Trip. |
-| finalFare | Decimal, nullable | Cước cuối cùng của Trip. |
-| createdAt | DateTime | Thời điểm tạo Trip. |
-| completedAt | DateTime, nullable | Thời điểm hoàn thành Trip. |
-| cancelledAt | DateTime, nullable | Thời điểm hủy Trip. |
-
-### E08 – TripOffer
-
-| Thuộc tính | Kiểu dữ liệu | Mô tả |
-|---|---|---|
-| offerId | String | Khóa chính của TripOffer. |
-| tripId | String | Trip được gửi yêu cầu. |
-| driverId | String | Driver nhận yêu cầu. |
-| status | String | Trạng thái yêu cầu: PENDING, ACCEPTED hoặc REJECTED. |
-| sentAt | DateTime | Thời điểm gửi yêu cầu. |
-| respondedAt | DateTime, nullable | Thời điểm Driver phản hồi. |
-
-### E09 – Payment
-
-| Thuộc tính | Kiểu dữ liệu | Mô tả |
-|---|---|---|
-| paymentId | String | Khóa chính của Payment. |
-| tripId | String | Trip được thanh toán. |
-| method | String | Phương thức thanh toán. |
-| amount | Decimal | Số tiền thanh toán. |
-| status | String | Trạng thái giao dịch. |
-| createdAt | DateTime | Thời điểm tạo giao dịch. |
-
-### E10 – Rating
-
-| Thuộc tính | Kiểu dữ liệu | Mô tả |
-|---|---|---|
-| ratingId | String | Khóa chính của Rating. |
-| tripId | String | Trip được đánh giá. |
-| customerId | String | Customer tạo đánh giá. |
-| driverId | String | Driver nhận đánh giá. |
-| score | Integer | Điểm đánh giá. |
-| comment | String | Nội dung nhận xét. |
-| createdAt | DateTime | Thời điểm đánh giá. |
+| Entity | Mô tả |
+|---|---|
+| USER | Lưu thông tin tài khoản người dùng. |
+| CUSTOMER | Lưu thông tin của khách hàng. |
+| DRIVER | Lưu thông tin và trạng thái hoạt động của tài xế. |
+| VEHICLE_TYPE | Lưu các loại xe được hệ thống hỗ trợ. |
+| VEHICLE | Lưu thông tin phương tiện của tài xế. |
+| DRIVER_LOCATION | Lưu vị trí được Driver cập nhật. |
+| TRIP | Lưu thông tin chuyến đi. |
+| TRIP_OFFER | Lưu yêu cầu chuyến được gửi đến Driver và phản hồi của Driver. |
+| PAYMENT | Lưu thông tin thanh toán của Trip. |
+| RATING | Lưu đánh giá Driver sau khi Trip hoàn thành. |
 
 ---
 
-## 10.3. Quan hệ giữa các thực thể
-
-| Thực thể 1 | Quan hệ | Thực thể 2 | Ý nghĩa |
-|---|---|---|---|
-| User | 1 – 0..1 | Customer | Một User có thể là Customer. |
-| User | 1 – 0..1 | Driver | Một User có thể là Driver. |
-| Driver | 1 – 0..N | Vehicle | Một Driver có thể có nhiều Vehicle. |
-| VehicleType | 1 – 0..N | Vehicle | Một VehicleType có thể được nhiều Vehicle sử dụng. |
-| Driver | 1 – 0..N | DriverLocation | Một Driver có nhiều lần cập nhật vị trí. |
-| Customer | 1 – 0..N | Trip | Một Customer có thể tạo nhiều Trip theo thời gian. |
-| Driver | 0..1 – 0..N | Trip | Một Trip có thể chưa có Driver hoặc có một Driver thực hiện. |
-| Vehicle | 0..1 – 0..N | Trip | Một Trip có thể chưa được gán Vehicle hoặc dùng một Vehicle. |
-| Trip | 1 – 0..N | TripOffer | Một Trip có thể tạo nhiều TripOffer nếu Driver từ chối. |
-| Driver | 1 – 0..N | TripOffer | Một Driver có thể nhận nhiều TripOffer. |
-| Trip | 1 – 0..N | Payment | Một Trip có thể có nhiều lần ghi nhận/thử thanh toán. |
-| Trip | 1 – 0..1 | Rating | Một Trip chỉ có tối đa một Rating chính thức. |
-| Customer | 1 – 0..N | Rating | Một Customer có thể tạo nhiều Rating cho các Trip khác nhau. |
-| Driver | 1 – 0..N | Rating | Một Driver có thể nhận nhiều Rating. |
-
----
-
-## 10.4. ERD
+## 10.2. ERD
 
 ```mermaid
 erDiagram
+
+    USER {
+        string user_id PK
+        string full_name
+        string phone
+        string email
+        string password_hash
+        string status
+        datetime created_at
+    }
+
+    CUSTOMER {
+        string customer_id PK
+        string user_id FK
+    }
+
+    DRIVER {
+        string driver_id PK
+        string user_id FK
+        string availability_status
+        decimal rating_average
+    }
+
+    VEHICLE_TYPE {
+        string vehicle_type_id PK
+        string name
+        string status
+    }
+
+    VEHICLE {
+        string vehicle_id PK
+        string driver_id FK
+        string vehicle_type_id FK
+        string license_plate
+        string brand
+        string model
+        string status
+    }
+
+    DRIVER_LOCATION {
+        string location_id PK
+        string driver_id FK
+        decimal latitude
+        decimal longitude
+        datetime recorded_at
+    }
+
+    TRIP {
+        string trip_id PK
+        string customer_id FK
+        string driver_id FK
+        string vehicle_id FK
+        string vehicle_type_id FK
+        string pickup_address
+        decimal pickup_latitude
+        decimal pickup_longitude
+        string destination_address
+        decimal destination_latitude
+        decimal destination_longitude
+        string status
+        decimal final_fare
+        datetime created_at
+        datetime completed_at
+        datetime cancelled_at
+    }
+
+    TRIP_OFFER {
+        string offer_id PK
+        string trip_id FK
+        string driver_id FK
+        string status
+        datetime sent_at
+        datetime responded_at
+    }
+
+    PAYMENT {
+        string payment_id PK
+        string trip_id FK
+        string method
+        decimal amount
+        string status
+        datetime created_at
+    }
+
+    RATING {
+        string rating_id PK
+        string trip_id FK
+        string customer_id FK
+        string driver_id FK
+        int score
+        string comment
+        datetime created_at
+    }
 
     USER ||--o| CUSTOMER : has
     USER ||--o| DRIVER : has
@@ -533,20 +490,69 @@ erDiagram
     DRIVER ||--o{ DRIVER_LOCATION : updates
 
     CUSTOMER ||--o{ TRIP : books
-
     DRIVER o|--o{ TRIP : performs
     VEHICLE o|--o{ TRIP : used_for
+    VEHICLE_TYPE ||--o{ TRIP : selected_for
 
     TRIP ||--o{ TRIP_OFFER : creates
     DRIVER ||--o{ TRIP_OFFER : receives
 
     TRIP ||--o{ PAYMENT : has
 
-    TRIP ||--o| RATING : receives
+    TRIP ||--o| RATING : has
     CUSTOMER ||--o{ RATING : creates
     DRIVER ||--o{ RATING : receives
 ```
 
+---
+
+## 10.3. Giải thích khóa chính và khóa ngoại
+
+| Entity | Primary Key (PK) | Foreign Key (FK) |
+|---|---|---|
+| USER | user_id | — |
+| CUSTOMER | customer_id | user_id |
+| DRIVER | driver_id | user_id |
+| VEHICLE_TYPE | vehicle_type_id | — |
+| VEHICLE | vehicle_id | driver_id, vehicle_type_id |
+| DRIVER_LOCATION | location_id | driver_id |
+| TRIP | trip_id | customer_id, driver_id, vehicle_id, vehicle_type_id |
+| TRIP_OFFER | offer_id | trip_id, driver_id |
+| PAYMENT | payment_id | trip_id |
+| RATING | rating_id | trip_id, customer_id, driver_id |
+
+---
+
+## 10.4. Các mối quan hệ
+
+| Quan hệ | Loại | Mô tả |
+|---|---|---|
+| USER – CUSTOMER | 1 : 0..1 | Một User có thể có một hồ sơ Customer. |
+| USER – DRIVER | 1 : 0..1 | Một User có thể có một hồ sơ Driver. |
+| DRIVER – VEHICLE | 1 : N | Một Driver có thể quản lý nhiều Vehicle. |
+| VEHICLE_TYPE – VEHICLE | 1 : N | Một VehicleType có thể có nhiều Vehicle. |
+| DRIVER – DRIVER_LOCATION | 1 : N | Một Driver có thể có nhiều bản ghi vị trí. |
+| CUSTOMER – TRIP | 1 : N | Một Customer có thể tạo nhiều Trip theo thời gian. |
+| DRIVER – TRIP | 1 : N | Một Driver có thể thực hiện nhiều Trip; một Trip có thể chưa có Driver khi mới tạo. |
+| VEHICLE – TRIP | 1 : N | Một Vehicle có thể được sử dụng cho nhiều Trip; một Trip có tối đa một Vehicle. |
+| VEHICLE_TYPE – TRIP | 1 : N | Một VehicleType có thể được nhiều Trip lựa chọn. |
+| TRIP – TRIP_OFFER | 1 : N | Một Trip có thể tạo nhiều TripOffer khi Driver từ chối. |
+| DRIVER – TRIP_OFFER | 1 : N | Một Driver có thể nhận nhiều TripOffer. |
+| TRIP – PAYMENT | 1 : N | Một Trip có thể có nhiều lần ghi nhận/thử thanh toán. |
+| TRIP – RATING | 1 : 0..1 | Một Trip có tối đa một Rating chính thức. |
+| CUSTOMER – RATING | 1 : N | Một Customer có thể tạo nhiều Rating cho các Trip khác nhau. |
+| DRIVER – RATING | 1 : N | Một Driver có thể nhận nhiều Rating từ các Trip khác nhau. |
+
+---
+
+## 10.5. Quy ước
+
+- **PK (Primary Key):** Khóa chính, định danh duy nhất một bản ghi.
+- **FK (Foreign Key):** Khóa ngoại, dùng để liên kết giữa các thực thể.
+- **1:1:** Quan hệ một - một.
+- **1:N:** Quan hệ một - nhiều.
+- **0..1:** Có thể không có hoặc có tối đa một.
+- **0..N:** Có thể không có hoặc có nhiều.
 ---
 
 # B11. THIẾT KẾ USE CASE
