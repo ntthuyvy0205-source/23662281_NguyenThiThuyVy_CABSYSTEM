@@ -1,1 +1,135 @@
+openapi: 3.0.3
 
+info:
+  title: Get Trip API
+  version: 1.0.0
+  description: >
+    API dùng để lấy thông tin chi tiết và trạng thái hiện tại
+    của một chuyến đi trong hệ thống CAB.
+
+servers:
+  - url: http://localhost:3000/api
+    description: Local development server
+
+paths:
+  /trips/{tripId}:
+    get:
+      tags:
+        - Trips
+
+      summary: Xem thông tin chuyến đi
+
+      description: >
+        Cho phép Customer xem thông tin chi tiết của Trip,
+        bao gồm điểm đón, điểm đến, Driver được phân công,
+        thời gian đến dự kiến và trạng thái hiện tại của chuyến đi.
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - name: tripId
+          in: path
+          required: true
+          description: ID của chuyến đi cần xem
+          schema:
+            type: string
+          example: TRIP001
+
+      responses:
+
+        '200':
+          description: Lấy thông tin chuyến đi thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tripId:
+                    type: string
+                    example: TRIP001
+
+                  customerId:
+                    type: string
+                    example: C001
+
+                  driver:
+                    type: object
+                    nullable: true
+                    properties:
+                      driverId:
+                        type: string
+                        example: D001
+
+                      fullName:
+                        type: string
+                        example: Nguyen Van B
+
+                      phone:
+                        type: string
+                        example: "0912345678"
+
+                  pickupLocation:
+                    type: string
+                    example: 1 Vo Van Ngan, Thu Duc, Ho Chi Minh City
+
+                  destinationLocation:
+                    type: string
+                    example: Ben Thanh Market, Ho Chi Minh City
+
+                  estimatedArrival:
+                    type: string
+                    description: Thời gian Driver dự kiến đến điểm đón
+                    example: 5 minutes
+
+                  status:
+                    type: string
+                    enum:
+                      - CREATED
+                      - SEARCHING_DRIVER
+                      - DRIVER_ASSIGNED
+                      - DRIVER_ARRIVED
+                      - PASSENGER_PICKED_UP
+                      - IN_PROGRESS
+                      - COMPLETED
+                      - CANCELLED
+                    example: DRIVER_ASSIGNED
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc token không hợp lệ
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Người dùng chưa được xác thực
+
+        '403':
+          description: Người dùng không có quyền xem Trip này
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Bạn không có quyền xem chuyến đi này
+
+        '404':
+          description: Không tìm thấy Trip
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Không tìm thấy chuyến đi
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
