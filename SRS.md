@@ -525,26 +525,27 @@ COMPLETED
 ```mermaid
 erDiagram
 
-    USER ||--o| CUSTOMER : "has"
-    USER ||--o| DRIVER : "has"
+    USER ||--o| CUSTOMER : has
+    USER ||--o| DRIVER : has
 
-    DRIVER ||--o{ VEHICLE : "owns"
-    VEHICLE_TYPE ||--o{ VEHICLE : "classifies"
-    DRIVER ||--o{ DRIVER_LOCATION : "updates"
+    DRIVER ||--o{ VEHICLE : owns
+    VEHICLE_TYPE ||--o{ VEHICLE : classifies
+    DRIVER ||--o{ DRIVER_LOCATION : updates
 
-    CUSTOMER ||--o{ TRIP : "books"
+    CUSTOMER ||--o{ TRIP : books
 
-    DRIVER o|--o{ TRIP : "performs"
-    VEHICLE o|--o{ TRIP : "used for"
+    DRIVER o|--o{ TRIP : performs
+    VEHICLE o|--o{ TRIP : used_for
 
-    TRIP ||--o{ TRIP_OFFER : "creates"
-    DRIVER ||--o{ TRIP_OFFER : "receives"
+    TRIP ||--o{ TRIP_OFFER : creates
+    DRIVER ||--o{ TRIP_OFFER : receives
 
-    TRIP ||--o{ PAYMENT : "has"
+    TRIP ||--o{ PAYMENT : has
 
-    TRIP ||--o| RATING : "receives"
-    CUSTOMER ||--o{ RATING : "creates"
-    DRIVER ||--o{ RATING : "receives"
+    TRIP ||--o| RATING : receives
+    CUSTOMER ||--o{ RATING : creates
+    DRIVER ||--o{ RATING : receives
+```
 
 ---
 
