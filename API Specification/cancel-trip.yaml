@@ -1,1 +1,136 @@
+openapi: 3.0.3
 
+info:
+  title: Cancel Trip API
+  version: 1.0.0
+  description: >
+    API dùng để hủy một chuyến đi trong hệ thống CAB.
+    Customer hoặc Driver có thể gửi yêu cầu hủy Trip
+    theo chính sách hủy chuyến của hệ thống.
+
+servers:
+  - url: http://localhost:3000/api
+    description: Local development server
+
+paths:
+  /trips/{tripId}/cancel:
+    post:
+      tags:
+        - Trips
+
+      summary: Hủy chuyến đi
+
+      description: >
+        Cho phép Customer hoặc Driver hủy một Trip.
+        Hệ thống kiểm tra trạng thái hiện tại của Trip trước
+        khi thực hiện yêu cầu hủy.
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - name: tripId
+          in: path
+          required: true
+          description: ID của chuyến đi cần hủy
+          schema:
+            type: string
+          example: TRIP001
+
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  description: Lý do hủy chuyến
+                  example: Thay đổi kế hoạch di chuyển
+
+      responses:
+
+        '200':
+          description: Hủy chuyến đi thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tripId:
+                    type: string
+                    example: TRIP001
+
+                  status:
+                    type: string
+                    example: CANCELLED
+
+                  reason:
+                    type: string
+                    example: Thay đổi kế hoạch di chuyển
+
+                  message:
+                    type: string
+                    example: Hủy chuyến đi thành công
+
+        '400':
+          description: Yêu cầu hủy chuyến không hợp lệ
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Yêu cầu hủy chuyến không hợp lệ
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc token không hợp lệ
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Người dùng chưa được xác thực
+
+        '403':
+          description: Người dùng không có quyền hủy Trip này
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Bạn không có quyền hủy chuyến đi này
+
+        '404':
+          description: Không tìm thấy Trip
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Không tìm thấy chuyến đi
+
+        '409':
+          description: Trạng thái hiện tại của Trip không cho phép hủy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Chuyến đi không thể hủy ở trạng thái hiện tại
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
