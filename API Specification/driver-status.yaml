@@ -1,0 +1,107 @@
+openapi: 3.0.3
+
+info:
+  title: Driver Status API
+  version: 1.0.0
+  description: >
+    API dùng để Driver cập nhật trạng thái hoạt động
+    của mình trong hệ thống CAB.
+
+servers:
+  - url: http://localhost:3000/api
+    description: Local development server
+
+paths:
+  /drivers/me/status:
+    patch:
+      tags:
+        - Drivers
+
+      summary: Cập nhật trạng thái Driver
+
+      description: >
+        Cho phép Driver cập nhật trạng thái hoạt động.
+        Hệ thống sử dụng trạng thái này để xác định Driver
+        có thể được xem xét khi phân công chuyến hay không.
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+
+              required:
+                - status
+
+              properties:
+                status:
+                  type: string
+                  description: Trạng thái hoạt động của Driver
+                  enum:
+                    - AVAILABLE
+                    - UNAVAILABLE
+                  example: AVAILABLE
+
+      responses:
+
+        '200':
+          description: Cập nhật trạng thái Driver thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  driverId:
+                    type: string
+                    example: D001
+
+                  status:
+                    type: string
+                    example: AVAILABLE
+
+                  message:
+                    type: string
+                    example: Cập nhật trạng thái Driver thành công
+
+        '400':
+          description: Trạng thái Driver không hợp lệ
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Trạng thái Driver không hợp lệ
+
+        '401':
+          description: Driver chưa đăng nhập hoặc token không hợp lệ
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Người dùng chưa được xác thực
+
+        '403':
+          description: Người dùng không có quyền cập nhật trạng thái Driver
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Chỉ Driver được phép cập nhật trạng thái
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
