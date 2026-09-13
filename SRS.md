@@ -1,4 +1,3 @@
-# ĐẶC TẢ YÊU CẦU PHẦN MỀM - HỆ THỐNG CAB
 
 ## 1. STAKEHOLDERS
 
