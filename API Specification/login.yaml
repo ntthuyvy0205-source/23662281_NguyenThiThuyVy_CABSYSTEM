@@ -1,1 +1,99 @@
+openapi: 3.0.3
 
+info:
+  title: Login API
+  version: 1.0.0
+  description: >
+    API dùng để đăng nhập vào hệ thống CAB.
+    Người dùng đăng nhập bằng số điện thoại và mật khẩu.
+
+servers:
+  - url: http://localhost:3000/api
+    description: Local development server
+
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+
+      summary: Đăng nhập hệ thống
+
+      description: >
+        Cho phép Customer hoặc Driver đăng nhập vào hệ thống
+        bằng số điện thoại và mật khẩu đã đăng ký.
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+
+              required:
+                - phone
+                - password
+
+              properties:
+                phone:
+                  type: string
+                  description: Số điện thoại của người dùng
+                  example: "0901234567"
+
+                password:
+                  type: string
+                  format: password
+                  description: Mật khẩu tài khoản
+                  example: Abc@123456
+
+      responses:
+
+        '200':
+          description: Đăng nhập thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    type: string
+                    example: U001
+
+                  fullName:
+                    type: string
+                    example: Nguyen Van A
+
+                  accountType:
+                    type: string
+                    example: CUSTOMER
+
+                  accessToken:
+                    type: string
+                    description: Token dùng để xác thực các API tiếp theo
+                    example: eyJhbGciOiJIUzI1NiJ9.example
+
+                  message:
+                    type: string
+                    example: Đăng nhập thành công
+
+        '400':
+          description: Thiếu hoặc sai định dạng dữ liệu
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Vui lòng nhập số điện thoại và mật khẩu
+
+        '401':
+          description: Thông tin đăng nhập không chính xác
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Số điện thoại hoặc mật khẩu không chính xác
