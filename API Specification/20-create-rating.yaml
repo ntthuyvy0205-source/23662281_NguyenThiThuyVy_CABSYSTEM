@@ -1,0 +1,212 @@
+openapi: 3.0.3
+
+info:
+  title: Create Rating API
+  description: >
+    API cho phép Customer tạo đánh giá cho Driver sau khi
+    Trip đã hoàn thành.
+    API này đáp ứng Functional Requirement FR41.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local development server
+
+tags:
+  - name: Rating
+    description: Các API liên quan đến đánh giá Driver.
+
+paths:
+  /trips/{tripId}/rating:
+    post:
+      tags:
+        - Rating
+      summary: Đánh giá Driver
+      description: >
+        Customer đã đăng nhập có thể tạo Rating cho Driver
+        của Trip đã hoàn thành. Customer chỉ được đánh giá
+        Driver của Trip thuộc về mình và mỗi Trip chỉ có
+        tối đa một Rating chính thức.
+      operationId: createRating
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - name: tripId
+          in: path
+          required: true
+          description: ID của Trip cần đánh giá.
+          schema:
+            type: string
+          example: TRIP001
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRatingRequest'
+            example:
+              score: 5
+              comment: Driver was friendly and professional
+
+      responses:
+        '201':
+          description: Tạo Rating thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RatingResponse'
+              example:
+                ratingId: RAT001
+                tripId: TRIP001
+                customerId: CUS001
+                driverId: DRV001
+                score: 5
+                comment: Driver was friendly and professional
+                createdAt: "2026-09-17T16:40:00Z"
+                message: Rating created successfully
+
+        '400':
+          description: Dữ liệu Rating không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: INVALID_RATING
+                message: Rating information is invalid
+
+        '401':
+          description: Customer chưa đăng nhập hoặc token không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: UNAUTHORIZED
+                message: Authentication is required
+
+        '403':
+          description: >
+            Tài khoản hiện tại không phải Customer hoặc
+            Customer không sở hữu Trip này.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: FORBIDDEN
+                message: You are not allowed to rate this trip
+
+        '404':
+          description: Không tìm thấy Trip hoặc Driver của Trip.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: TRIP_NOT_FOUND
+                message: Trip not found
+
+        '409':
+          description: >
+            Trip chưa hoàn thành hoặc Trip đã có Rating.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                tripNotCompleted:
+                  value:
+                    code: TRIP_NOT_COMPLETED
+                    message: Rating is only allowed after trip completion
+
+                ratingAlreadyExists:
+                  value:
+                    code: RATING_ALREADY_EXISTS
+                    message: This trip has already been rated
+
+        '500':
+          description: Lỗi hệ thống.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: INTERNAL_SERVER_ERROR
+                message: An unexpected error occurred
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    CreateRatingRequest:
+      type: object
+      required:
+        - score
+      properties:
+        score:
+          type: integer
+          description: Điểm đánh giá Driver.
+          example: 5
+
+        comment:
+          type: string
+          description: Nhận xét của Customer về Driver.
+          example: Driver was friendly and professional
+
+    RatingResponse:
+      type: object
+      properties:
+        ratingId:
+          type: string
+          example: RAT001
+
+        tripId:
+          type: string
+          example: TRIP001
+
+        customerId:
+          type: string
+          example: CUS001
+
+        driverId:
+          type: string
+          example: DRV001
+
+        score:
+          type: integer
+          example: 5
+
+        comment:
+          type: string
+          example: Driver was friendly and professional
+
+        createdAt:
+          type: string
+          format: date-time
+          example: "2026-09-17T16:40:00Z"
+
+        message:
+          type: string
+          example: Rating created successfully
+
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          example: INVALID_RATING
+
+        message:
+          type: string
+          example: Rating information is invalid
