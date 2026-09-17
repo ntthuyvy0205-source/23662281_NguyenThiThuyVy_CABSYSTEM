@@ -705,31 +705,5 @@ flowchart LR
 
 ---
 
-# B14. TEST CASE
-
-Test Case chưa được thực hiện trong giai đoạn hiện tại.
-
-Test Case sẽ được xây dựng trong giai đoạn kiểm thử dựa trên:
-
-- Functional Requirements.
-- Business Rules.
-- Use Cases.
-- Acceptance Criteria.
-
-Chuỗi truy vết dự kiến:
-
-```text
-Business Goal
-      ↓
-Business Requirement
-      ↓
-Business Process
-      ↓
-Functional Requirement
-      ↓
-Use Case
-      ↓
-Acceptance Criteria
-      ↓
 Test Case
 ```
