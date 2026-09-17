@@ -1,0 +1,229 @@
+openapi: 3.0.3
+
+info:
+  title: Respond Trip Offer API
+  description: >
+    API cho phép Driver phản hồi yêu cầu chuyến bằng cách
+    chấp nhận hoặc từ chối TripOffer.
+    API này đáp ứng Functional Requirements FR23, FR24 và FR25.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local development server
+
+tags:
+  - name: Trip Offer
+    description: Các API liên quan đến yêu cầu chuyến gửi cho Driver.
+
+paths:
+  /trip-offers/{offerId}/response:
+    put:
+      tags:
+        - Trip Offer
+      summary: Phản hồi yêu cầu chuyến
+      description: >
+        Driver đã đăng nhập có thể chấp nhận hoặc từ chối TripOffer
+        được gửi đến mình. Nếu Driver chấp nhận, hệ thống gán Driver
+        cho Trip. Nếu Driver từ chối, Customer có thể lựa chọn
+        Driver khác.
+      operationId: respondTripOffer
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - name: offerId
+          in: path
+          required: true
+          description: ID của TripOffer cần phản hồi.
+          schema:
+            type: string
+          example: OFF001
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TripOfferResponseRequest'
+            example:
+              response: ACCEPTED
+
+      responses:
+        '200':
+          description: Phản hồi TripOffer thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TripOfferResponse'
+              examples:
+                accepted:
+                  summary: Driver chấp nhận chuyến
+                  value:
+                    offerId: OFF001
+                    tripId: TRIP001
+                    driverId: DRV001
+                    offerStatus: ACCEPTED
+                    tripStatus: DRIVER_ASSIGNED
+                    respondedAt: "2026-09-17T15:50:00Z"
+                    message: Trip offer accepted successfully
+
+                rejected:
+                  summary: Driver từ chối chuyến
+                  value:
+                    offerId: OFF001
+                    tripId: TRIP001
+                    driverId: DRV001
+                    offerStatus: REJECTED
+                    tripStatus: CREATED
+                    respondedAt: "2026-09-17T15:50:00Z"
+                    message: Trip offer rejected successfully
+
+        '400':
+          description: Giá trị phản hồi không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: INVALID_RESPONSE
+                message: Response must be ACCEPTED or REJECTED
+
+        '401':
+          description: Driver chưa đăng nhập hoặc token không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: UNAUTHORIZED
+                message: Authentication is required
+
+        '403':
+          description: >
+            Tài khoản hiện tại không phải Driver hoặc TripOffer
+            không được gửi đến Driver hiện tại.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: FORBIDDEN
+                message: You are not allowed to respond to this trip offer
+
+        '404':
+          description: Không tìm thấy TripOffer.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: TRIP_OFFER_NOT_FOUND
+                message: Trip offer not found
+
+        '409':
+          description: >
+            TripOffer đã được phản hồi, Driver không còn khả dụng
+            hoặc trạng thái Trip không cho phép xử lý yêu cầu này.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                alreadyResponded:
+                  value:
+                    code: TRIP_OFFER_ALREADY_RESPONDED
+                    message: Trip offer has already been responded to
+
+                driverUnavailable:
+                  value:
+                    code: DRIVER_NOT_AVAILABLE
+                    message: Driver is no longer available
+
+                invalidTripStatus:
+                  value:
+                    code: INVALID_TRIP_STATUS
+                    message: Trip offer cannot be processed in the current trip status
+
+        '500':
+          description: Lỗi hệ thống.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: INTERNAL_SERVER_ERROR
+                message: An unexpected error occurred
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    TripOfferResponseRequest:
+      type: object
+      required:
+        - response
+      properties:
+        response:
+          type: string
+          enum:
+            - ACCEPTED
+            - REJECTED
+          example: ACCEPTED
+
+    TripOfferResponse:
+      type: object
+      properties:
+        offerId:
+          type: string
+          example: OFF001
+
+        tripId:
+          type: string
+          example: TRIP001
+
+        driverId:
+          type: string
+          example: DRV001
+
+        offerStatus:
+          type: string
+          enum:
+            - ACCEPTED
+            - REJECTED
+          example: ACCEPTED
+
+        tripStatus:
+          type: string
+          enum:
+            - CREATED
+            - DRIVER_ASSIGNED
+          example: DRIVER_ASSIGNED
+
+        respondedAt:
+          type: string
+          format: date-time
+          example: "2026-09-17T15:50:00Z"
+
+        message:
+          type: string
+          example: Trip offer accepted successfully
+
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          example: INVALID_RESPONSE
+
+        message:
+          type: string
+          example: Response must be ACCEPTED or REJECTED
