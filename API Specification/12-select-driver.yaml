@@ -1,0 +1,218 @@
+openapi: 3.0.3
+
+info:
+  title: Select Driver API
+  description: >
+    API cho phép Customer chọn một Driver khả dụng cho Trip.
+    Sau khi lựa chọn hợp lệ, hệ thống tạo TripOffer và gửi
+    yêu cầu chuyến đến Driver đã chọn.
+    API này đáp ứng Functional Requirements FR20 và FR21.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local development server
+
+tags:
+  - name: Trip
+    description: Các API liên quan đến Trip và lựa chọn Driver.
+
+paths:
+  /trips/{tripId}/driver-selection:
+    post:
+      tags:
+        - Trip
+      summary: Chọn Driver cho Trip
+      description: >
+        Customer đã đăng nhập chọn một Driver đang AVAILABLE
+        và có Vehicle phù hợp với VehicleType của Trip.
+        Nếu Driver hợp lệ, hệ thống ghi nhận lựa chọn và tạo
+        TripOffer với trạng thái PENDING để gửi đến Driver.
+      operationId: selectDriver
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - name: tripId
+          in: path
+          required: true
+          description: ID của Trip cần chọn Driver.
+          schema:
+            type: string
+          example: TRIP001
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SelectDriverRequest'
+            example:
+              driverId: DRV001
+
+      responses:
+        '201':
+          description: Chọn Driver và gửi yêu cầu chuyến thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverSelectionResponse'
+              example:
+                tripId: TRIP001
+                driverId: DRV001
+                offerId: OFF001
+                tripStatus: DRIVER_SELECTED
+                offerStatus: PENDING
+                sentAt: "2026-09-17T15:45:00Z"
+                message: Trip offer sent to selected driver
+
+        '400':
+          description: Dữ liệu lựa chọn Driver không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: INVALID_DRIVER_SELECTION
+                message: Driver selection information is invalid
+
+        '401':
+          description: Customer chưa đăng nhập hoặc token không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: UNAUTHORIZED
+                message: Authentication is required
+
+        '403':
+          description: >
+            Tài khoản hiện tại không phải Customer hoặc Customer
+            không sở hữu Trip này.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: FORBIDDEN
+                message: You are not allowed to select a driver for this trip
+
+        '404':
+          description: Không tìm thấy Trip hoặc Driver.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: RESOURCE_NOT_FOUND
+                message: Trip or driver not found
+
+        '409':
+          description: >
+            Driver không còn AVAILABLE, đang có Trip hoạt động,
+            Vehicle không phù hợp với VehicleType của Trip,
+            hoặc Trip không ở trạng thái cho phép chọn Driver.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                driverUnavailable:
+                  value:
+                    code: DRIVER_NOT_AVAILABLE
+                    message: Selected driver is not available
+
+                driverHasActiveTrip:
+                  value:
+                    code: DRIVER_HAS_ACTIVE_TRIP
+                    message: Selected driver already has an active trip
+
+                incompatibleVehicle:
+                  value:
+                    code: VEHICLE_TYPE_MISMATCH
+                    message: Driver vehicle does not match the selected vehicle type
+
+                invalidTripStatus:
+                  value:
+                    code: INVALID_TRIP_STATUS
+                    message: Driver cannot be selected for the current trip status
+
+        '500':
+          description: Lỗi hệ thống.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: INTERNAL_SERVER_ERROR
+                message: An unexpected error occurred
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    SelectDriverRequest:
+      type: object
+      required:
+        - driverId
+      properties:
+        driverId:
+          type: string
+          description: ID của Driver được Customer lựa chọn.
+          example: DRV001
+
+    DriverSelectionResponse:
+      type: object
+      properties:
+        tripId:
+          type: string
+          example: TRIP001
+
+        driverId:
+          type: string
+          example: DRV001
+
+        offerId:
+          type: string
+          example: OFF001
+
+        tripStatus:
+          type: string
+          enum:
+            - DRIVER_SELECTED
+          example: DRIVER_SELECTED
+
+        offerStatus:
+          type: string
+          enum:
+            - PENDING
+          example: PENDING
+
+        sentAt:
+          type: string
+          format: date-time
+          example: "2026-09-17T15:45:00Z"
+
+        message:
+          type: string
+          example: Trip offer sent to selected driver
+
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          example: DRIVER_NOT_AVAILABLE
+
+        message:
+          type: string
+          example: Selected driver is not available
