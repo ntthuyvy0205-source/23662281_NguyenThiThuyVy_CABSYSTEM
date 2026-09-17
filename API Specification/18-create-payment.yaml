@@ -1,0 +1,212 @@
+openapi: 3.0.3
+
+info:
+  title: Create Payment API
+  description: >
+    API cho phép Customer thực hiện và ghi nhận thanh toán
+    cho một Trip đã hoàn thành.
+    API này đáp ứng Functional Requirements FR33, FR35,
+    FR36, FR37 và FR38.
+    Cước cuối cùng của Trip được hệ thống ghi nhận sau khi
+    Trip hoàn thành theo FR33.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local development server
+
+tags:
+  - name: Payment
+    description: Các API liên quan đến thanh toán Trip.
+
+paths:
+  /trips/{tripId}/payments:
+    post:
+      tags:
+        - Payment
+      summary: Tạo thanh toán cho Trip
+      description: >
+        Customer đã đăng nhập lựa chọn phương thức thanh toán
+        cho Trip đã hoàn thành. Hệ thống sử dụng finalFare của Trip
+        làm số tiền thanh toán và lưu kết quả giao dịch.
+      operationId: createPayment
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - name: tripId
+          in: path
+          required: true
+          description: ID của Trip cần thanh toán.
+          schema:
+            type: string
+          example: TRIP001
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePaymentRequest'
+            example:
+              method: CASH
+
+      responses:
+        '201':
+          description: Ghi nhận thanh toán thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentResponse'
+              example:
+                paymentId: PAY001
+                tripId: TRIP001
+                method: CASH
+                amount: 85000
+                status: SUCCESS
+                createdAt: "2026-09-17T16:30:00Z"
+                message: Payment recorded successfully
+
+        '400':
+          description: Phương thức thanh toán hoặc dữ liệu thanh toán không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: INVALID_PAYMENT_METHOD
+                message: Payment method is invalid
+
+        '401':
+          description: Customer chưa đăng nhập hoặc token không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: UNAUTHORIZED
+                message: Authentication is required
+
+        '403':
+          description: >
+            Tài khoản hiện tại không phải Customer hoặc
+            Customer không sở hữu Trip này.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: FORBIDDEN
+                message: You are not allowed to pay for this trip
+
+        '404':
+          description: Không tìm thấy Trip.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: TRIP_NOT_FOUND
+                message: Trip not found
+
+        '409':
+          description: >
+            Trip chưa hoàn thành, chưa có finalFare hoặc
+            trạng thái hiện tại không cho phép thanh toán.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                tripNotCompleted:
+                  value:
+                    code: TRIP_NOT_COMPLETED
+                    message: Payment is only allowed for a completed trip
+
+                fareNotAvailable:
+                  value:
+                    code: FINAL_FARE_NOT_AVAILABLE
+                    message: Final fare is not available for this trip
+
+        '500':
+          description: Lỗi hệ thống hoặc không thể xử lý thanh toán.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: PAYMENT_PROCESSING_ERROR
+                message: Payment could not be processed
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    CreatePaymentRequest:
+      type: object
+      required:
+        - method
+      properties:
+        method:
+          type: string
+          description: Phương thức thanh toán Customer lựa chọn.
+          enum:
+            - CASH
+            - ELECTRONIC
+          example: CASH
+
+    PaymentResponse:
+      type: object
+      properties:
+        paymentId:
+          type: string
+          example: PAY001
+
+        tripId:
+          type: string
+          example: TRIP001
+
+        method:
+          type: string
+          enum:
+            - CASH
+            - ELECTRONIC
+          example: CASH
+
+        amount:
+          type: number
+          format: double
+          example: 85000
+
+        status:
+          type: string
+          description: Kết quả xử lý giao dịch thanh toán.
+          example: SUCCESS
+
+        createdAt:
+          type: string
+          format: date-time
+          example: "2026-09-17T16:30:00Z"
+
+        message:
+          type: string
+          example: Payment recorded successfully
+
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          example: INVALID_PAYMENT_METHOD
+
+        message:
+          type: string
+          example: Payment method is invalid
