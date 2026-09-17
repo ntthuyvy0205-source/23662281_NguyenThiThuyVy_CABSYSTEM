@@ -1,0 +1,157 @@
+openapi: 3.0.3
+
+info:
+  title: Register Customer API
+  description: >
+    API cho phép Customer đăng ký tài khoản mới trong CAB System.
+    API này đáp ứng Functional Requirement FR01.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local development server
+
+tags:
+  - name: Authentication
+    description: Các API liên quan đến đăng ký và xác thực người dùng.
+
+paths:
+  /auth/register:
+    post:
+      tags:
+        - Authentication
+      summary: Đăng ký tài khoản Customer
+      description: >
+        Customer cung cấp thông tin cá nhân và thông tin đăng nhập.
+        Nếu dữ liệu hợp lệ, hệ thống tạo tài khoản Customer mới.
+      operationId: registerCustomer
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - fullName
+                - phone
+                - email
+                - password
+              properties:
+                fullName:
+                  type: string
+                  example: Nguyen Van A
+
+                phone:
+                  type: string
+                  example: "0901234567"
+
+                email:
+                  type: string
+                  format: email
+                  example: nguyenvana@example.com
+
+                password:
+                  type: string
+                  format: password
+                  example: StrongPassword123
+
+            example:
+              fullName: Nguyen Van A
+              phone: "0901234567"
+              email: nguyenvana@example.com
+              password: StrongPassword123
+
+      responses:
+        '201':
+          description: Đăng ký Customer thành công.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+                  user:
+                    type: object
+                    properties:
+                      userId:
+                        type: string
+
+                      customerId:
+                        type: string
+
+                      fullName:
+                        type: string
+
+                      phone:
+                        type: string
+
+                      email:
+                        type: string
+                        format: email
+
+                      status:
+                        type: string
+
+                      createdAt:
+                        type: string
+                        format: date-time
+
+              example:
+                message: Customer registered successfully
+                user:
+                  userId: USR001
+                  customerId: CUS001
+                  fullName: Nguyen Van A
+                  phone: "0901234567"
+                  email: nguyenvana@example.com
+                  status: ACTIVE
+                  createdAt: "2026-09-17T10:00:00Z"
+
+        '400':
+          description: Dữ liệu đăng ký không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: INVALID_INPUT
+                message: Registration information is invalid
+
+        '409':
+          description: Email hoặc số điện thoại đã được sử dụng.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: ACCOUNT_ALREADY_EXISTS
+                message: Email or phone number already exists
+
+        '500':
+          description: Lỗi hệ thống.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: INTERNAL_SERVER_ERROR
+                message: An unexpected error occurred
+
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          example: INVALID_INPUT
+
+        message:
+          type: string
+          example: Registration information is invalid
