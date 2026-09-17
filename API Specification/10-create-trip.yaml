@@ -1,0 +1,255 @@
+openapi: 3.0.3
+
+info:
+  title: Create Trip API
+  description: >
+    API cho phép Customer tạo một Trip mới bằng cách cung cấp
+    điểm đón, điểm đến và loại xe đã chọn.
+    API này đáp ứng Functional Requirements FR11, FR12,
+    FR13, FR14 và FR17.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local development server
+
+tags:
+  - name: Trip
+    description: Các API liên quan đến Trip.
+
+paths:
+  /trips:
+    post:
+      tags:
+        - Trip
+      summary: Tạo Trip mới
+      description: >
+        Customer đã đăng nhập cung cấp điểm đón, điểm đến
+        và VehicleType đã chọn. Hệ thống kiểm tra thông tin
+        và tạo Trip mới nếu dữ liệu hợp lệ.
+      operationId: createTrip
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTripRequest'
+            example:
+              pickupAddress: 12 Nguyen Van Bao, Go Vap, Ho Chi Minh City
+              pickupLatitude: 10.8220
+              pickupLongitude: 106.6870
+              destinationAddress: 1 Vo Van Ngan, Thu Duc, Ho Chi Minh City
+              destinationLatitude: 10.8506
+              destinationLongitude: 106.7719
+              vehicleTypeId: VT001
+
+      responses:
+        '201':
+          description: Tạo Trip thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TripResponse'
+              example:
+                tripId: TRIP001
+                customerId: CUS001
+                vehicleTypeId: VT001
+                pickupAddress: 12 Nguyen Van Bao, Go Vap, Ho Chi Minh City
+                pickupLatitude: 10.8220
+                pickupLongitude: 106.6870
+                destinationAddress: 1 Vo Van Ngan, Thu Duc, Ho Chi Minh City
+                destinationLatitude: 10.8506
+                destinationLongitude: 106.7719
+                status: CREATED
+                createdAt: "2026-09-17T15:40:00Z"
+                message: Trip created successfully
+
+        '400':
+          description: Thông tin Trip không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: INVALID_TRIP_DATA
+                message: Trip information is invalid
+
+        '401':
+          description: Customer chưa đăng nhập hoặc token không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: UNAUTHORIZED
+                message: Authentication is required
+
+        '403':
+          description: Tài khoản hiện tại không phải Customer.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: FORBIDDEN
+                message: Only customers can create trips
+
+        '404':
+          description: Không tìm thấy VehicleType đã chọn.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: VEHICLE_TYPE_NOT_FOUND
+                message: Selected vehicle type not found
+
+        '409':
+          description: Customer đang có một Trip hoạt động.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: ACTIVE_TRIP_EXISTS
+                message: Customer already has an active trip
+
+        '500':
+          description: Lỗi hệ thống.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: INTERNAL_SERVER_ERROR
+                message: An unexpected error occurred
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    CreateTripRequest:
+      type: object
+      required:
+        - pickupAddress
+        - pickupLatitude
+        - pickupLongitude
+        - destinationAddress
+        - destinationLatitude
+        - destinationLongitude
+        - vehicleTypeId
+
+      properties:
+        pickupAddress:
+          type: string
+          example: 12 Nguyen Van Bao, Go Vap, Ho Chi Minh City
+
+        pickupLatitude:
+          type: number
+          format: double
+          minimum: -90
+          maximum: 90
+          example: 10.8220
+
+        pickupLongitude:
+          type: number
+          format: double
+          minimum: -180
+          maximum: 180
+          example: 106.6870
+
+        destinationAddress:
+          type: string
+          example: 1 Vo Van Ngan, Thu Duc, Ho Chi Minh City
+
+        destinationLatitude:
+          type: number
+          format: double
+          minimum: -90
+          maximum: 90
+          example: 10.8506
+
+        destinationLongitude:
+          type: number
+          format: double
+          minimum: -180
+          maximum: 180
+          example: 106.7719
+
+        vehicleTypeId:
+          type: string
+          example: VT001
+
+    TripResponse:
+      type: object
+      properties:
+        tripId:
+          type: string
+          example: TRIP001
+
+        customerId:
+          type: string
+          example: CUS001
+
+        vehicleTypeId:
+          type: string
+          example: VT001
+
+        pickupAddress:
+          type: string
+
+        pickupLatitude:
+          type: number
+          format: double
+
+        pickupLongitude:
+          type: number
+          format: double
+
+        destinationAddress:
+          type: string
+
+        destinationLatitude:
+          type: number
+          format: double
+
+        destinationLongitude:
+          type: number
+          format: double
+
+        status:
+          type: string
+          enum:
+            - CREATED
+          example: CREATED
+
+        createdAt:
+          type: string
+          format: date-time
+
+        message:
+          type: string
+          example: Trip created successfully
+
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+
+      properties:
+        code:
+          type: string
+          example: INVALID_TRIP_DATA
+
+        message:
+          type: string
+          example: Trip information is invalid
