@@ -1,0 +1,187 @@
+openapi: 3.0.3
+
+info:
+  title: Get Trip History API
+  description: >
+    API cho phép Customer xem lịch sử các Trip của mình
+    trong CAB System.
+    API này đáp ứng Functional Requirement FR39.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local development server
+
+tags:
+  - name: Trip
+    description: Các API liên quan đến Trip.
+
+paths:
+  /users/me/trips:
+    get:
+      tags:
+        - Trip
+      summary: Xem lịch sử Trip
+      description: >
+        Customer đã đăng nhập có thể xem danh sách các Trip
+        thuộc tài khoản của mình.
+      operationId: getTripHistory
+
+      security:
+        - bearerAuth: []
+
+      responses:
+        '200':
+          description: Lấy lịch sử Trip thành công.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  customerId:
+                    type: string
+                    example: CUS001
+
+                  trips:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TripHistoryItem'
+
+              example:
+                customerId: CUS001
+                trips:
+                  - tripId: TRIP001
+                    driverId: DRV001
+                    vehicleTypeId: VT001
+                    pickupAddress: 12 Nguyen Van Bao, Go Vap, Ho Chi Minh City
+                    destinationAddress: 1 Vo Van Ngan, Thu Duc, Ho Chi Minh City
+                    status: COMPLETED
+                    finalFare: 85000
+                    createdAt: "2026-09-17T15:40:00Z"
+                    completedAt: "2026-09-17T16:25:00Z"
+
+                  - tripId: TRIP002
+                    driverId: null
+                    vehicleTypeId: VT002
+                    pickupAddress: 20 Le Loi, District 1, Ho Chi Minh City
+                    destinationAddress: 100 Nguyen Hue, District 1, Ho Chi Minh City
+                    status: CANCELLED
+                    finalFare: null
+                    createdAt: "2026-09-16T10:00:00Z"
+                    completedAt: null
+
+        '401':
+          description: Customer chưa đăng nhập hoặc token không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: UNAUTHORIZED
+                message: Authentication is required
+
+        '403':
+          description: Tài khoản hiện tại không phải Customer.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: FORBIDDEN
+                message: Only customers can view trip history
+
+        '404':
+          description: Không tìm thấy Customer.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: CUSTOMER_NOT_FOUND
+                message: Customer not found
+
+        '500':
+          description: Lỗi hệ thống.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: INTERNAL_SERVER_ERROR
+                message: An unexpected error occurred
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    TripHistoryItem:
+      type: object
+      properties:
+        tripId:
+          type: string
+          example: TRIP001
+
+        driverId:
+          type: string
+          nullable: true
+          example: DRV001
+
+        vehicleTypeId:
+          type: string
+          example: VT001
+
+        pickupAddress:
+          type: string
+          example: 12 Nguyen Van Bao, Go Vap, Ho Chi Minh City
+
+        destinationAddress:
+          type: string
+          example: 1 Vo Van Ngan, Thu Duc, Ho Chi Minh City
+
+        status:
+          type: string
+          enum:
+            - CREATED
+            - DRIVER_SELECTED
+            - DRIVER_ASSIGNED
+            - DRIVER_ARRIVED
+            - PASSENGER_PICKED_UP
+            - IN_PROGRESS
+            - COMPLETED
+            - CANCELLED
+          example: COMPLETED
+
+        finalFare:
+          type: number
+          format: double
+          nullable: true
+          example: 85000
+
+        createdAt:
+          type: string
+          format: date-time
+          example: "2026-09-17T15:40:00Z"
+
+        completedAt:
+          type: string
+          format: date-time
+          nullable: true
+          example: "2026-09-17T16:25:00Z"
+
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          example: CUSTOMER_NOT_FOUND
+
+        message:
+          type: string
+          example: Customer not found
