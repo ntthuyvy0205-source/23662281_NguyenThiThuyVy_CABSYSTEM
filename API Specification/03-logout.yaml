@@ -1,0 +1,89 @@
+openapi: 3.0.3
+
+info:
+  title: Logout API
+  description: >
+    API cho phép Customer hoặc Driver đăng xuất khỏi CAB System.
+    API này đáp ứng Functional Requirement FR03.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local development server
+
+tags:
+  - name: Authentication
+    description: Các API liên quan đến xác thực người dùng.
+
+paths:
+  /auth/logout:
+    post:
+      tags:
+        - Authentication
+      summary: Đăng xuất hệ thống
+      description: >
+        Customer hoặc Driver đã đăng nhập gửi yêu cầu đăng xuất.
+        Hệ thống kết thúc phiên đăng nhập hiện tại.
+      operationId: logout
+
+      security:
+        - bearerAuth: []
+
+      responses:
+        '200':
+          description: Đăng xuất thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogoutResponse'
+              example:
+                message: Logout successful
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc thông tin xác thực không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: UNAUTHORIZED
+                message: Authentication is required
+
+        '500':
+          description: Lỗi hệ thống.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: INTERNAL_SERVER_ERROR
+                message: An unexpected error occurred
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    LogoutResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Logout successful
+
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          example: UNAUTHORIZED
+
+        message:
+          type: string
+          example: Authentication is required
