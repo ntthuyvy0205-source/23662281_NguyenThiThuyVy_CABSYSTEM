@@ -1,0 +1,147 @@
+openapi: 3.0.3
+
+info:
+  title: Get Driver Vehicles API
+  description: >
+    API cho phép Driver xem danh sách Vehicle được gắn với tài khoản
+    của mình trong CAB System.
+    API này đáp ứng Functional Requirement FR10.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local development server
+
+tags:
+  - name: Driver
+    description: Các API liên quan đến Driver.
+
+paths:
+  /drivers/me/vehicles:
+    get:
+      tags:
+        - Driver
+      summary: Xem Vehicle của Driver
+      description: >
+        Driver đã đăng nhập có thể xem thông tin các Vehicle
+        được gắn với tài khoản của mình.
+      operationId: getDriverVehicles
+
+      security:
+        - bearerAuth: []
+
+      responses:
+        '200':
+          description: Lấy danh sách Vehicle thành công.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  driverId:
+                    type: string
+                    example: DRV001
+
+                  vehicles:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Vehicle'
+
+              example:
+                driverId: DRV001
+                vehicles:
+                  - vehicleId: VEH001
+                    vehicleTypeId: VT001
+                    licensePlate: "51A-12345"
+                    brand: Toyota
+                    model: Vios
+                    status: ACTIVE
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc token không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: UNAUTHORIZED
+                message: Authentication is required
+
+        '403':
+          description: Tài khoản hiện tại không phải Driver.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: FORBIDDEN
+                message: Only drivers can view their vehicles
+
+        '404':
+          description: Không tìm thấy Driver.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: DRIVER_NOT_FOUND
+                message: Driver not found
+
+        '500':
+          description: Lỗi hệ thống.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: INTERNAL_SERVER_ERROR
+                message: An unexpected error occurred
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Vehicle:
+      type: object
+      properties:
+        vehicleId:
+          type: string
+          example: VEH001
+
+        vehicleTypeId:
+          type: string
+          example: VT001
+
+        licensePlate:
+          type: string
+          example: "51A-12345"
+
+        brand:
+          type: string
+          example: Toyota
+
+        model:
+          type: string
+          example: Vios
+
+        status:
+          type: string
+          example: ACTIVE
+
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          example: DRIVER_NOT_FOUND
+
+        message:
+          type: string
+          example: Driver not found
