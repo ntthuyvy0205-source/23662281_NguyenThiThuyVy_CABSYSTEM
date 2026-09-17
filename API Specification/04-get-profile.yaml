@@ -1,0 +1,135 @@
+openapi: 3.0.3
+
+info:
+  title: Get Profile API
+  description: >
+    API cho phép Customer hoặc Driver xem thông tin hồ sơ cá nhân
+    của tài khoản đang đăng nhập.
+    API này đáp ứng Functional Requirements FR04 và FR07.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local development server
+
+tags:
+  - name: Profile
+    description: Các API liên quan đến hồ sơ người dùng.
+
+paths:
+  /users/me:
+    get:
+      tags:
+        - Profile
+      summary: Xem hồ sơ cá nhân
+      description: >
+        Customer hoặc Driver đã đăng nhập có thể xem
+        thông tin hồ sơ cá nhân của mình.
+      operationId: getProfile
+
+      security:
+        - bearerAuth: []
+
+      responses:
+        '200':
+          description: Lấy thông tin hồ sơ thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileResponse'
+              example:
+                userId: USR001
+                fullName: Nguyen Van A
+                phone: "0901234567"
+                email: nguyenvana@example.com
+                role: CUSTOMER
+                status: ACTIVE
+                createdAt: "2026-09-17T10:00:00Z"
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc token không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: UNAUTHORIZED
+                message: Authentication is required
+
+        '404':
+          description: Không tìm thấy hồ sơ người dùng.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: USER_NOT_FOUND
+                message: User profile not found
+
+        '500':
+          description: Lỗi hệ thống.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: INTERNAL_SERVER_ERROR
+                message: An unexpected error occurred
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    ProfileResponse:
+      type: object
+      properties:
+        userId:
+          type: string
+          example: USR001
+
+        fullName:
+          type: string
+          example: Nguyen Van A
+
+        phone:
+          type: string
+          example: "0901234567"
+
+        email:
+          type: string
+          format: email
+          example: nguyenvana@example.com
+
+        role:
+          type: string
+          enum:
+            - CUSTOMER
+            - DRIVER
+          example: CUSTOMER
+
+        status:
+          type: string
+          example: ACTIVE
+
+        createdAt:
+          type: string
+          format: date-time
+          example: "2026-09-17T10:00:00Z"
+
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          example: USER_NOT_FOUND
+
+        message:
+          type: string
+          example: User profile not found
