@@ -1,0 +1,174 @@
+openapi: 3.0.3
+
+info:
+  title: Login API
+  description: >
+    API cho phép Customer hoặc Driver đăng nhập vào CAB System
+    bằng email và mật khẩu.
+    API này đáp ứng Functional Requirements FR02 và FR06.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local development server
+
+tags:
+  - name: Authentication
+    description: Các API liên quan đến xác thực người dùng.
+
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: Đăng nhập hệ thống
+      description: >
+        Customer hoặc Driver cung cấp email và mật khẩu.
+        Nếu thông tin xác thực hợp lệ, hệ thống trả về access token
+        cùng thông tin cơ bản của người dùng.
+      operationId: login
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+            example:
+              email: nguyenvana@example.com
+              password: StrongPassword123
+
+      responses:
+        '200':
+          description: Đăng nhập thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+              example:
+                message: Login successful
+                accessToken: "eyJhbGciOiJIUzI1NiJ9..."
+                tokenType: Bearer
+                user:
+                  userId: USR001
+                  fullName: Nguyen Van A
+                  email: nguyenvana@example.com
+                  role: CUSTOMER
+                  status: ACTIVE
+
+        '400':
+          description: Dữ liệu đăng nhập không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: INVALID_INPUT
+                message: Login information is invalid
+
+        '401':
+          description: Email hoặc mật khẩu không chính xác.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: INVALID_CREDENTIALS
+                message: Email or password is incorrect
+
+        '403':
+          description: Tài khoản không được phép truy cập hệ thống.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: ACCOUNT_NOT_ACTIVE
+                message: Account is not active
+
+        '500':
+          description: Lỗi hệ thống.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: INTERNAL_SERVER_ERROR
+                message: An unexpected error occurred
+
+components:
+  schemas:
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: nguyenvana@example.com
+
+        password:
+          type: string
+          format: password
+          example: StrongPassword123
+
+    LoginResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Login successful
+
+        accessToken:
+          type: string
+          description: Token dùng để xác thực các API yêu cầu đăng nhập.
+
+        tokenType:
+          type: string
+          example: Bearer
+
+        user:
+          $ref: '#/components/schemas/UserInfo'
+
+    UserInfo:
+      type: object
+      properties:
+        userId:
+          type: string
+          example: USR001
+
+        fullName:
+          type: string
+          example: Nguyen Van A
+
+        email:
+          type: string
+          format: email
+          example: nguyenvana@example.com
+
+        role:
+          type: string
+          enum:
+            - CUSTOMER
+            - DRIVER
+          example: CUSTOMER
+
+        status:
+          type: string
+          example: ACTIVE
+
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          example: INVALID_CREDENTIALS
+
+        message:
+          type: string
+          example: Email or password is incorrect
