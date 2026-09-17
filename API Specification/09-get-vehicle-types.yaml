@@ -1,0 +1,120 @@
+openapi: 3.0.3
+
+info:
+  title: Get Vehicle Types API
+  description: >
+    API cho phép Customer xem danh sách các loại xe đang khả dụng
+    trong CAB System.
+    API này đáp ứng Functional Requirement FR16.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local development server
+
+tags:
+  - name: Vehicle Type
+    description: Các API liên quan đến loại xe.
+
+paths:
+  /vehicle-types:
+    get:
+      tags:
+        - Vehicle Type
+      summary: Xem danh sách loại xe
+      description: >
+        Customer đã đăng nhập có thể xem danh sách các VehicleType
+        đang hoạt động để lựa chọn loại xe phù hợp cho Trip.
+      operationId: getVehicleTypes
+
+      security:
+        - bearerAuth: []
+
+      responses:
+        '200':
+          description: Lấy danh sách loại xe thành công.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  vehicleTypes:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/VehicleType'
+
+              example:
+                vehicleTypes:
+                  - vehicleTypeId: VT001
+                    name: Car
+                    status: ACTIVE
+                  - vehicleTypeId: VT002
+                    name: Motorbike
+                    status: ACTIVE
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc token không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: UNAUTHORIZED
+                message: Authentication is required
+
+        '403':
+          description: Tài khoản hiện tại không có quyền truy cập chức năng này.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: FORBIDDEN
+                message: Access is not allowed
+
+        '500':
+          description: Lỗi hệ thống.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: INTERNAL_SERVER_ERROR
+                message: An unexpected error occurred
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    VehicleType:
+      type: object
+      properties:
+        vehicleTypeId:
+          type: string
+          example: VT001
+
+        name:
+          type: string
+          example: Car
+
+        status:
+          type: string
+          example: ACTIVE
+
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          example: UNAUTHORIZED
+
+        message:
+          type: string
+          example: Authentication is required
