@@ -1,0 +1,167 @@
+openapi: 3.0.3
+
+info:
+  title: Update Driver Status API
+  description: >
+    API cho phép Driver cập nhật trạng thái hoạt động của mình
+    thành AVAILABLE hoặc UNAVAILABLE.
+    API này đáp ứng Functional Requirement FR08.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local development server
+
+tags:
+  - name: Driver
+    description: Các API liên quan đến Driver.
+
+paths:
+  /drivers/me/status:
+    put:
+      tags:
+        - Driver
+      summary: Cập nhật trạng thái hoạt động của Driver
+      description: >
+        Driver đã đăng nhập có thể cập nhật trạng thái hoạt động.
+        AVAILABLE cho biết Driver sẵn sàng nhận yêu cầu chuyến.
+        UNAVAILABLE cho biết Driver hiện không nhận yêu cầu chuyến.
+      operationId: updateDriverStatus
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDriverStatusRequest'
+            example:
+              availabilityStatus: AVAILABLE
+
+      responses:
+        '200':
+          description: Cập nhật trạng thái Driver thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverStatusResponse'
+              example:
+                driverId: DRV001
+                availabilityStatus: AVAILABLE
+                message: Driver status updated successfully
+
+        '400':
+          description: Trạng thái được cung cấp không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: INVALID_STATUS
+                message: Driver status is invalid
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc token không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: UNAUTHORIZED
+                message: Authentication is required
+
+        '403':
+          description: Tài khoản hiện tại không phải Driver.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: FORBIDDEN
+                message: Only drivers can update availability status
+
+        '404':
+          description: Không tìm thấy Driver.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: DRIVER_NOT_FOUND
+                message: Driver not found
+
+        '409':
+          description: >
+            Không thể cập nhật trạng thái do Driver đang thực hiện
+            một Trip đang hoạt động.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: DRIVER_HAS_ACTIVE_TRIP
+                message: Driver has an active trip
+
+        '500':
+          description: Lỗi hệ thống.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: INTERNAL_SERVER_ERROR
+                message: An unexpected error occurred
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    UpdateDriverStatusRequest:
+      type: object
+      required:
+        - availabilityStatus
+      properties:
+        availabilityStatus:
+          type: string
+          enum:
+            - AVAILABLE
+            - UNAVAILABLE
+          example: AVAILABLE
+
+    DriverStatusResponse:
+      type: object
+      properties:
+        driverId:
+          type: string
+          example: DRV001
+
+        availabilityStatus:
+          type: string
+          enum:
+            - AVAILABLE
+            - UNAVAILABLE
+          example: AVAILABLE
+
+        message:
+          type: string
+          example: Driver status updated successfully
+
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          example: INVALID_STATUS
+
+        message:
+          type: string
+          example: Driver status is invalid
