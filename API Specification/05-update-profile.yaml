@@ -1,0 +1,182 @@
+openapi: 3.0.3
+
+info:
+  title: Update Profile API
+  description: >
+    API cho phép Customer hoặc Driver cập nhật thông tin hồ sơ cá nhân
+    của tài khoản đang đăng nhập.
+    API này đáp ứng Functional Requirements FR05 và FR07.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local development server
+
+tags:
+  - name: Profile
+    description: Các API liên quan đến hồ sơ người dùng.
+
+paths:
+  /users/me:
+    put:
+      tags:
+        - Profile
+      summary: Cập nhật hồ sơ cá nhân
+      description: >
+        Customer hoặc Driver đã đăng nhập có thể cập nhật
+        các thông tin cá nhân được phép chỉnh sửa.
+      operationId: updateProfile
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProfileRequest'
+            example:
+              fullName: Nguyen Van B
+              phone: "0912345678"
+              email: nguyenvanb@example.com
+
+      responses:
+        '200':
+          description: Cập nhật hồ sơ thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileResponse'
+              example:
+                userId: USR001
+                fullName: Nguyen Van B
+                phone: "0912345678"
+                email: nguyenvanb@example.com
+                role: CUSTOMER
+                status: ACTIVE
+                updatedAt: "2026-09-17T11:00:00Z"
+
+        '400':
+          description: Dữ liệu cập nhật không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: INVALID_INPUT
+                message: Profile information is invalid
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc token không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: UNAUTHORIZED
+                message: Authentication is required
+
+        '404':
+          description: Không tìm thấy hồ sơ người dùng.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: USER_NOT_FOUND
+                message: User profile not found
+
+        '409':
+          description: Email hoặc số điện thoại đã được sử dụng.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: PROFILE_CONFLICT
+                message: Email or phone number already exists
+
+        '500':
+          description: Lỗi hệ thống.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: INTERNAL_SERVER_ERROR
+                message: An unexpected error occurred
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    UpdateProfileRequest:
+      type: object
+      properties:
+        fullName:
+          type: string
+          example: Nguyen Van B
+
+        phone:
+          type: string
+          example: "0912345678"
+
+        email:
+          type: string
+          format: email
+          example: nguyenvanb@example.com
+
+    ProfileResponse:
+      type: object
+      properties:
+        userId:
+          type: string
+          example: USR001
+
+        fullName:
+          type: string
+          example: Nguyen Van B
+
+        phone:
+          type: string
+          example: "0912345678"
+
+        email:
+          type: string
+          format: email
+          example: nguyenvanb@example.com
+
+        role:
+          type: string
+          enum:
+            - CUSTOMER
+            - DRIVER
+          example: CUSTOMER
+
+        status:
+          type: string
+          example: ACTIVE
+
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2026-09-17T11:00:00Z"
+
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          example: INVALID_INPUT
+
+        message:
+          type: string
+          example: Profile information is invalid
