@@ -1,0 +1,160 @@
+openapi: 3.0.3
+
+info:
+  title: Get Rating API
+  description: >
+    API cho phép Customer xem Rating đã gửi cho Driver
+    của một Trip.
+    API này đáp ứng Functional Requirement FR42.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local development server
+
+tags:
+  - name: Rating
+    description: Các API liên quan đến đánh giá Driver.
+
+paths:
+  /trips/{tripId}/rating:
+    get:
+      tags:
+        - Rating
+      summary: Xem Rating của Trip
+      description: >
+        Customer đã đăng nhập có thể xem Rating đã gửi
+        cho Driver của Trip thuộc về mình.
+      operationId: getRating
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - name: tripId
+          in: path
+          required: true
+          description: ID của Trip cần xem Rating.
+          schema:
+            type: string
+          example: TRIP001
+
+      responses:
+        '200':
+          description: Lấy thông tin Rating thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RatingResponse'
+              example:
+                ratingId: RAT001
+                tripId: TRIP001
+                customerId: CUS001
+                driverId: DRV001
+                score: 5
+                comment: Driver was friendly and professional
+                createdAt: "2026-09-17T16:40:00Z"
+
+        '401':
+          description: Customer chưa đăng nhập hoặc token không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: UNAUTHORIZED
+                message: Authentication is required
+
+        '403':
+          description: >
+            Tài khoản hiện tại không phải Customer hoặc
+            Customer không sở hữu Trip này.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: FORBIDDEN
+                message: You are not allowed to view this rating
+
+        '404':
+          description: Không tìm thấy Trip hoặc Trip chưa có Rating.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                tripNotFound:
+                  value:
+                    code: TRIP_NOT_FOUND
+                    message: Trip not found
+
+                ratingNotFound:
+                  value:
+                    code: RATING_NOT_FOUND
+                    message: Rating not found for this trip
+
+        '500':
+          description: Lỗi hệ thống.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: INTERNAL_SERVER_ERROR
+                message: An unexpected error occurred
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    RatingResponse:
+      type: object
+      properties:
+        ratingId:
+          type: string
+          example: RAT001
+
+        tripId:
+          type: string
+          example: TRIP001
+
+        customerId:
+          type: string
+          example: CUS001
+
+        driverId:
+          type: string
+          example: DRV001
+
+        score:
+          type: integer
+          example: 5
+
+        comment:
+          type: string
+          nullable: true
+          example: Driver was friendly and professional
+
+        createdAt:
+          type: string
+          format: date-time
+          example: "2026-09-17T16:40:00Z"
+
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          example: RATING_NOT_FOUND
+
+        message:
+          type: string
+          example: Rating not found for this trip
