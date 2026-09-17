@@ -1,0 +1,187 @@
+openapi: 3.0.3
+
+info:
+  title: Update Trip Status API
+  description: >
+    API cho phép Driver cập nhật trạng thái của Trip trong quá trình
+    thực hiện chuyến đi. API này đáp ứng Functional Requirements
+    FR28, FR29, FR30 và FR31.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local development server
+
+tags:
+  - name: Trip
+    description: Các API liên quan đến Trip.
+
+paths:
+  /trips/{tripId}/status:
+    put:
+      tags:
+        - Trip
+      summary: Cập nhật trạng thái Trip
+      description: >
+        Driver đã được phân công cho Trip có thể cập nhật trạng thái
+        của chuyến theo đúng thứ tự của vòng đời Trip.
+      operationId: updateTripStatus
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - name: tripId
+          in: path
+          required: true
+          description: ID của Trip cần cập nhật trạng thái.
+          schema:
+            type: string
+          example: TRIP001
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTripStatusRequest'
+            example:
+              status: DRIVER_ARRIVED
+
+      responses:
+        '200':
+          description: Cập nhật trạng thái Trip thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TripStatusResponse'
+              example:
+                tripId: TRIP001
+                driverId: DRV001
+                status: DRIVER_ARRIVED
+                message: Trip status updated successfully
+
+        '400':
+          description: Trạng thái được cung cấp không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: INVALID_STATUS
+                message: Trip status is invalid
+
+        '401':
+          description: Driver chưa đăng nhập hoặc token không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: UNAUTHORIZED
+                message: Authentication is required
+
+        '403':
+          description: >
+            Tài khoản hiện tại không phải Driver hoặc Driver
+            không được phân công cho Trip này.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: FORBIDDEN
+                message: You are not allowed to update this trip
+
+        '404':
+          description: Không tìm thấy Trip.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: TRIP_NOT_FOUND
+                message: Trip not found
+
+        '409':
+          description: >
+            Không thể cập nhật vì trạng thái mới không đúng
+            thứ tự vòng đời của Trip.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: INVALID_STATUS_TRANSITION
+                message: Invalid trip status transition
+
+        '500':
+          description: Lỗi hệ thống.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: INTERNAL_SERVER_ERROR
+                message: An unexpected error occurred
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    UpdateTripStatusRequest:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          description: Trạng thái mới của Trip.
+          enum:
+            - DRIVER_ARRIVED
+            - PASSENGER_PICKED_UP
+            - IN_PROGRESS
+            - COMPLETED
+          example: DRIVER_ARRIVED
+
+    TripStatusResponse:
+      type: object
+      properties:
+        tripId:
+          type: string
+          example: TRIP001
+
+        driverId:
+          type: string
+          example: DRV001
+
+        status:
+          type: string
+          enum:
+            - DRIVER_ARRIVED
+            - PASSENGER_PICKED_UP
+            - IN_PROGRESS
+            - COMPLETED
+          example: DRIVER_ARRIVED
+
+        message:
+          type: string
+          example: Trip status updated successfully
+
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          example: INVALID_STATUS_TRANSITION
+
+        message:
+          type: string
+          example: Invalid trip status transition
