@@ -1,0 +1,159 @@
+openapi: 3.0.3
+
+info:
+  title: Cancel Trip API
+  description: >
+    API cho phép Customer hoặc Driver hủy Trip khi trạng thái
+    hiện tại của Trip cho phép hủy.
+    Trip không bị xóa khỏi hệ thống mà được chuyển sang trạng thái CANCELLED.
+    API này đáp ứng Functional Requirements FR15 và FR32.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local development server
+
+tags:
+  - name: Trip
+    description: Các API liên quan đến Trip.
+
+paths:
+  /trips/{tripId}/cancel:
+    put:
+      tags:
+        - Trip
+      summary: Hủy Trip
+      description: >
+        Customer sở hữu Trip hoặc Driver được phân công cho Trip
+        có thể gửi yêu cầu hủy chuyến. Hệ thống kiểm tra quyền
+        và trạng thái hiện tại trước khi chuyển Trip sang CANCELLED.
+      operationId: cancelTrip
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - name: tripId
+          in: path
+          required: true
+          description: ID của Trip cần hủy.
+          schema:
+            type: string
+          example: TRIP001
+
+      responses:
+        '200':
+          description: Hủy Trip thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CancelTripResponse'
+              example:
+                tripId: TRIP001
+                status: CANCELLED
+                cancelledAt: "2026-09-17T16:00:00Z"
+                message: Trip cancelled successfully
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc token không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: UNAUTHORIZED
+                message: Authentication is required
+
+        '403':
+          description: >
+            Người dùng không có quyền hủy Trip này.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: FORBIDDEN
+                message: You are not allowed to cancel this trip
+
+        '404':
+          description: Không tìm thấy Trip.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: TRIP_NOT_FOUND
+                message: Trip not found
+
+        '409':
+          description: >
+            Trip đang ở trạng thái không cho phép hủy hoặc
+            Trip đã được hủy trước đó.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalidStatus:
+                  value:
+                    code: TRIP_CANNOT_BE_CANCELLED
+                    message: Trip cannot be cancelled in its current status
+
+                alreadyCancelled:
+                  value:
+                    code: TRIP_ALREADY_CANCELLED
+                    message: Trip has already been cancelled
+
+        '500':
+          description: Lỗi hệ thống.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: INTERNAL_SERVER_ERROR
+                message: An unexpected error occurred
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    CancelTripResponse:
+      type: object
+      properties:
+        tripId:
+          type: string
+          example: TRIP001
+
+        status:
+          type: string
+          enum:
+            - CANCELLED
+          example: CANCELLED
+
+        cancelledAt:
+          type: string
+          format: date-time
+          example: "2026-09-17T16:00:00Z"
+
+        message:
+          type: string
+          example: Trip cancelled successfully
+
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          example: TRIP_CANNOT_BE_CANCELLED
+
+        message:
+          type: string
+          example: Trip cannot be cancelled in its current status
