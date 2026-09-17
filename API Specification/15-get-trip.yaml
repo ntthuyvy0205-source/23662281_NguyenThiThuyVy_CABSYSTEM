@@ -1,0 +1,252 @@
+openapi: 3.0.3
+
+info:
+  title: Get Trip API
+  description: >
+    API cho phép Customer hoặc Driver xem thông tin chi tiết
+    và trạng thái hiện tại của một Trip.
+    API này đáp ứng Functional Requirements FR26, FR27,
+    FR34 và FR40.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local development server
+
+tags:
+  - name: Trip
+    description: Các API liên quan đến Trip.
+
+paths:
+  /trips/{tripId}:
+    get:
+      tags:
+        - Trip
+      summary: Xem thông tin chi tiết Trip
+      description: >
+        Customer hoặc Driver đã đăng nhập có thể xem thông tin
+        của Trip mà mình có liên quan, bao gồm điểm đón, điểm đến,
+        loại xe, Driver được phân công, trạng thái Trip và cước
+        cuối cùng nếu đã được ghi nhận.
+      operationId: getTrip
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - name: tripId
+          in: path
+          required: true
+          description: ID của Trip cần xem.
+          schema:
+            type: string
+          example: TRIP001
+
+      responses:
+        '200':
+          description: Lấy thông tin Trip thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TripResponse'
+              example:
+                tripId: TRIP001
+                customerId: CUS001
+                driver:
+                  driverId: DRV001
+                  fullName: Tran Van B
+                vehicle:
+                  vehicleId: VEH001
+                  vehicleTypeId: VT001
+                  licensePlate: "51A-12345"
+                  brand: Toyota
+                  model: Vios
+                pickupAddress: 12 Nguyen Van Bao, Go Vap, Ho Chi Minh City
+                pickupLatitude: 10.8220
+                pickupLongitude: 106.6870
+                destinationAddress: 1 Vo Van Ngan, Thu Duc, Ho Chi Minh City
+                destinationLatitude: 10.8506
+                destinationLongitude: 106.7719
+                status: DRIVER_ASSIGNED
+                finalFare: null
+                createdAt: "2026-09-17T15:40:00Z"
+                completedAt: null
+                cancelledAt: null
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc token không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: UNAUTHORIZED
+                message: Authentication is required
+
+        '403':
+          description: Người dùng không có quyền xem Trip này.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: FORBIDDEN
+                message: You are not allowed to view this trip
+
+        '404':
+          description: Không tìm thấy Trip.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: TRIP_NOT_FOUND
+                message: Trip not found
+
+        '500':
+          description: Lỗi hệ thống.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: INTERNAL_SERVER_ERROR
+                message: An unexpected error occurred
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    TripResponse:
+      type: object
+      properties:
+        tripId:
+          type: string
+          example: TRIP001
+
+        customerId:
+          type: string
+          example: CUS001
+
+        driver:
+          allOf:
+            - $ref: '#/components/schemas/DriverInfo'
+          nullable: true
+
+        vehicle:
+          allOf:
+            - $ref: '#/components/schemas/VehicleInfo'
+          nullable: true
+
+        pickupAddress:
+          type: string
+          example: 12 Nguyen Van Bao, Go Vap, Ho Chi Minh City
+
+        pickupLatitude:
+          type: number
+          format: double
+          example: 10.8220
+
+        pickupLongitude:
+          type: number
+          format: double
+          example: 106.6870
+
+        destinationAddress:
+          type: string
+          example: 1 Vo Van Ngan, Thu Duc, Ho Chi Minh City
+
+        destinationLatitude:
+          type: number
+          format: double
+          example: 10.8506
+
+        destinationLongitude:
+          type: number
+          format: double
+          example: 106.7719
+
+        status:
+          type: string
+          enum:
+            - CREATED
+            - DRIVER_SELECTED
+            - DRIVER_ASSIGNED
+            - DRIVER_ARRIVED
+            - PASSENGER_PICKED_UP
+            - IN_PROGRESS
+            - COMPLETED
+            - CANCELLED
+          example: DRIVER_ASSIGNED
+
+        finalFare:
+          type: number
+          format: double
+          nullable: true
+          example: null
+
+        createdAt:
+          type: string
+          format: date-time
+
+        completedAt:
+          type: string
+          format: date-time
+          nullable: true
+
+        cancelledAt:
+          type: string
+          format: date-time
+          nullable: true
+
+    DriverInfo:
+      type: object
+      properties:
+        driverId:
+          type: string
+          example: DRV001
+
+        fullName:
+          type: string
+          example: Tran Van B
+
+    VehicleInfo:
+      type: object
+      properties:
+        vehicleId:
+          type: string
+          example: VEH001
+
+        vehicleTypeId:
+          type: string
+          example: VT001
+
+        licensePlate:
+          type: string
+          example: "51A-12345"
+
+        brand:
+          type: string
+          example: Toyota
+
+        model:
+          type: string
+          example: Vios
+
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          example: TRIP_NOT_FOUND
+
+        message:
+          type: string
+          example: Trip not found
