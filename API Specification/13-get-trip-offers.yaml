@@ -1,0 +1,171 @@
+openapi: 3.0.3
+
+info:
+  title: Get Trip Offers API
+  description: >
+    API cho phép Driver xem danh sách các yêu cầu chuyến
+    được gửi đến mình trong CAB System.
+    API này đáp ứng Functional Requirement FR22.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local development server
+
+tags:
+  - name: Trip Offer
+    description: Các API liên quan đến yêu cầu chuyến gửi cho Driver.
+
+paths:
+  /drivers/me/trip-offers:
+    get:
+      tags:
+        - Trip Offer
+      summary: Xem danh sách yêu cầu chuyến
+      description: >
+        Driver đã đăng nhập có thể xem các TripOffer
+        được Customer gửi đến mình.
+      operationId: getDriverTripOffers
+
+      security:
+        - bearerAuth: []
+
+      responses:
+        '200':
+          description: Lấy danh sách TripOffer thành công.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  driverId:
+                    type: string
+                    example: DRV001
+
+                  tripOffers:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TripOffer'
+
+              example:
+                driverId: DRV001
+                tripOffers:
+                  - offerId: OFF001
+                    tripId: TRIP001
+                    status: PENDING
+                    sentAt: "2026-09-17T15:45:00Z"
+                    respondedAt: null
+                    trip:
+                      pickupAddress: 12 Nguyen Van Bao, Go Vap, Ho Chi Minh City
+                      destinationAddress: 1 Vo Van Ngan, Thu Duc, Ho Chi Minh City
+                      vehicleTypeId: VT001
+
+        '401':
+          description: Driver chưa đăng nhập hoặc token không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: UNAUTHORIZED
+                message: Authentication is required
+
+        '403':
+          description: Tài khoản hiện tại không phải Driver.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: FORBIDDEN
+                message: Only drivers can view trip offers
+
+        '404':
+          description: Không tìm thấy Driver.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: DRIVER_NOT_FOUND
+                message: Driver not found
+
+        '500':
+          description: Lỗi hệ thống.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: INTERNAL_SERVER_ERROR
+                message: An unexpected error occurred
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    TripOffer:
+      type: object
+      properties:
+        offerId:
+          type: string
+          example: OFF001
+
+        tripId:
+          type: string
+          example: TRIP001
+
+        status:
+          type: string
+          enum:
+            - PENDING
+            - ACCEPTED
+            - REJECTED
+          example: PENDING
+
+        sentAt:
+          type: string
+          format: date-time
+          example: "2026-09-17T15:45:00Z"
+
+        respondedAt:
+          type: string
+          format: date-time
+          nullable: true
+          example: null
+
+        trip:
+          $ref: '#/components/schemas/TripSummary'
+
+    TripSummary:
+      type: object
+      properties:
+        pickupAddress:
+          type: string
+          example: 12 Nguyen Van Bao, Go Vap, Ho Chi Minh City
+
+        destinationAddress:
+          type: string
+          example: 1 Vo Van Ngan, Thu Duc, Ho Chi Minh City
+
+        vehicleTypeId:
+          type: string
+          example: VT001
+
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          example: DRIVER_NOT_FOUND
+
+        message:
+          type: string
+          example: Driver not found
