@@ -4,7 +4,6 @@
 
 # B1. XÁC ĐỊNH STAKEHOLDER
 
-Stakeholder là các cá nhân, nhóm hoặc tổ chức có liên quan đến việc sử dụng, vận hành, quản lý và phát triển CAB System.
 
 | STT | Stakeholder | Vai trò |
 |---:|---|---|
@@ -61,16 +60,14 @@ quadrantChart
 
 # B3. CHUYỂN ĐỔI YÊU CẦU KHÁCH HÀNG THÀNH MỤC TIÊU NGHIỆP VỤ
 
-> Quy ước: `BR-Gxx` được sử dụng để định danh Business Goal, tránh trùng với Business Requirement ở B5.
-
 | Mã | Mục tiêu nghiệp vụ | Mô tả |
 |---|---|---|
-| BR-G01 | Xây dựng nền tảng đặt xe trực tuyến | Cho phép Customer thực hiện quy trình đặt xe trực tiếp trên hệ thống. |
-| BR-G02 | Đơn giản hóa việc lựa chọn và phân công Driver | Cho phép Customer lựa chọn Driver đang khả dụng mà chưa cần thuật toán tối ưu Driver tốt nhất trong MVP. |
-| BR-G03 | Theo dõi quá trình thực hiện chuyến đi | Cho phép Customer biết Driver được phân công và trạng thái hiện tại của Trip. |
-| BR-G04 | Quản lý cước phí và thanh toán | Ghi nhận cước và hỗ trợ thanh toán cho Trip trong phạm vi MVP. |
-| BR-G05 | Quản lý Customer và Driver | Tập trung quản lý dữ liệu Customer, Driver, Vehicle và các Trip liên quan. |
-| BR-G06 | Đảm bảo hệ thống MVP hoạt động ổn định | Ưu tiên quy trình nghiệp vụ hoạt động đúng, an toàn và có khả năng mở rộng trong tương lai. |
+| BR-G01 | Xây dựng nền tảng đặt xe trực tuyến | Xây dựng hệ thống hỗ trợ khách hàng thực hiện quy trình đặt xe trực tuyến thuận tiện và tập trung. |
+| BR-G02 | Cải thiện quy trình tìm và phân công tài xế | Hỗ trợ kết nối khách hàng với tài xế phù hợp và giảm sự phụ thuộc vào việc phân công thủ công. |
+| BR-G03 | Theo dõi quá trình thực hiện chuyến đi | Giúp khách hàng và tài xế theo dõi thông tin và trạng thái của chuyến đi trong suốt quá trình thực hiện. |
+| BR-G04 | Quản lý cước phí và thanh toán | Hỗ trợ ghi nhận cước phí, phương thức thanh toán và kết quả giao dịch của chuyến đi. |
+| BR-G05 | Quản lý tập trung thông tin khách hàng và tài xế | Quản lý tập trung thông tin khách hàng, tài xế, phương tiện và dữ liệu chuyến đi liên quan. |
+| BR-G06 | Xây dựng hệ thống ổn định và có khả năng mở rộng | Đảm bảo hệ thống hoạt động ổn định và có khả năng mở rộng, bổ sung các chức năng trong tương lai. |
 
 ---
 
@@ -130,6 +127,8 @@ Trong giai đoạn MVP:
 - Chưa triển khai Business Intelligence nâng cao.
 - Chưa hỗ trợ nhiều Payment Provider cùng lúc.
 - Chưa triển khai chức năng quản trị nâng cao.
+- Chưa triển khai module Notification độc lập trong giai đoạn MVP.
+- Các chức năng quản trị của Operation Staff chưa được triển khai trong phạm vi MVP hiện tại.
 
 ## 4.4. Luồng nghiệp vụ MVP
 
@@ -591,52 +590,57 @@ erDiagram
 ```mermaid
 flowchart LR
 
-    C[Customer]
     D[Driver]
 
-    subgraph CAB[CAB SYSTEM]
+    subgraph CAB["CAB SYSTEM"]
+        direction TB
+
         UC01([Đăng ký tài khoản])
         UC02([Đăng nhập])
         UC03([Đăng xuất])
         UC04([Quản lý thông tin cá nhân])
         UC05([Tạo yêu cầu đặt xe])
         UC06([Chọn loại xe])
-        UC07([Chọn Driver])
+        UC07([Chọn tài xế])
         UC08([Xem và phản hồi yêu cầu chuyến])
         UC09([Cập nhật trạng thái hoạt động])
         UC10([Cập nhật vị trí])
-        UC11([Xem thông tin Vehicle])
-        UC12([Theo dõi Trip])
-        UC13([Cập nhật trạng thái Trip])
-        UC14([Hủy Trip])
+        UC11([Xem thông tin phương tiện])
+        UC12([Theo dõi chuyến đi])
+        UC13([Cập nhật trạng thái chuyến đi])
+        UC14([Hủy chuyến đi])
         UC15([Thanh toán])
-        UC16([Xem lịch sử Trip])
-        UC17([Đánh giá Driver])
+        UC16([Xem lịch sử chuyến đi])
+        UC17([Đánh giá tài xế])
     end
 
-    C --> UC01
-    C --> UC02
-    C --> UC03
-    C --> UC04
-    C --> UC05
-    C --> UC06
-    C --> UC07
-    C --> UC12
-    C --> UC14
-    C --> UC15
-    C --> UC16
-    C --> UC17
+    C[Customer]
 
-    D --> UC02
-    D --> UC03
-    D --> UC04
-    D --> UC08
-    D --> UC09
-    D --> UC10
-    D --> UC11
-    D --> UC13
-    D --> UC14
+    D --- UC02
+    D --- UC03
+    D --- UC04
+    D --- UC08
+    D --- UC09
+    D --- UC10
+    D --- UC11
+    D --- UC13
+    D --- UC14
+
+    UC01 --- C
+    UC02 --- C
+    UC03 --- C
+    UC04 --- C
+    UC05 --- C
+    UC06 --- C
+    UC07 --- C
+    UC12 --- C
+    UC14 --- C
+    UC15 --- C
+    UC16 --- C
+    UC17 --- C
 ```
+
+---
 
 ---
 
