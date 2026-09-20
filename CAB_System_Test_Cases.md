@@ -260,10 +260,3 @@
 | TC-BP09-019 | BP-09 – Lịch sử chuyến và đánh giá Driver | Invalid Format/Type | tripId không tồn tại | Customer login | 1. GET/POST rating | TRIP999 | Báo không tìm thấy | High |
 | TC-BP09-020 | BP-09 – Lịch sử chuyến và đánh giá Driver | Invalid Format/Type | Token malformed | Customer chưa xác thực hợp lệ | 1. GET history | Bearer abc | Từ chối | High |
 
-## 3. Tổng hợp
-
-- **09 Test Scenario** tương ứng với 09 Business Process của SRS hiện tại.
-- **20 Test Case/Test Scenario**.
-- **Tổng cộng: 180 Test Case**.
-- Mỗi Test Scenario đều có các nhóm: **Positive, Negative, Boundary, Empty, Invalid Format/Type**.
-- Các giới hạn chưa được SRS quy định cụ thể như độ dài trường, thang điểm Rating hoặc trạng thái biên được phép hủy được ghi **TBD** thay vì tự đặt thêm Business Rule.
