@@ -513,7 +513,6 @@ erDiagram
     DRIVER ||--o{ RATING : receives
 ```
 
-> `driver_id` và `vehicle_id` của `TRIP` có thể chưa có giá trị khi Trip mới được tạo. Hai giá trị này được gán sau khi Driver chấp nhận yêu cầu chuyến.
 
 ## 10.3. Khóa chính và khóa ngoại
 
@@ -708,5 +707,3 @@ flowchart LR
 | BR-G01, BR-G03 | BR-09 Lịch sử và đánh giá | BP-09 | FR39–FR42 | UC16–UC17 | AC39–AC42 |
 
 ---
-
-
