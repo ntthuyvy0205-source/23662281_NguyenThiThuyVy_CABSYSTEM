@@ -1,6 +1,5 @@
-# CAB System – Test Scenario & Test Case
+# CAB System 
 
-> Cơ sở thiết kế: SRS hiện tại và 21 API Specification của CAB System. Mỗi Business Process (BP) được xem là một Test Scenario lớn; mỗi scenario có tối đa 20 Test Case.
 
 ## 1. Danh sách Test Scenario
 
