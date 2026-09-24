@@ -19,7 +19,7 @@
 
 ## BP-01 – Quản lý tài khoản Customer
 
-**Traceability:** FR01–FR05 → AC01–AC05
+
 
 | Test Case ID | Test Scenario | Nhóm kiểm thử | Test Case | Preconditions | Test Steps | Test Data | Expected Result | Priority |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -46,7 +46,7 @@
 
 ## BP-02 – Quản lý Driver
 
-**Traceability:** FR06–FR10 → AC06–AC10
+
 
 | Test Case ID | Test Scenario | Nhóm kiểm thử | Test Case | Preconditions | Test Steps | Test Data | Expected Result | Priority |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -73,7 +73,7 @@
 
 ## BP-03 – Tạo yêu cầu đặt xe
 
-**Traceability:** FR11–FR15 → AC11–AC15
+
 
 | Test Case ID | Test Scenario | Nhóm kiểm thử | Test Case | Preconditions | Test Steps | Test Data | Expected Result | Priority |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -100,7 +100,7 @@
 
 ## BP-04 – Lựa chọn loại xe
 
-**Traceability:** FR16–FR17 → AC16–AC17
+
 
 | Test Case ID | Test Scenario | Nhóm kiểm thử | Test Case | Preconditions | Test Steps | Test Data | Expected Result | Priority |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -127,7 +127,6 @@
 
 ## BP-05 – Tìm và lựa chọn Driver
 
-**Traceability:** FR18–FR21 → AC18–AC21
 
 | Test Case ID | Test Scenario | Nhóm kiểm thử | Test Case | Preconditions | Test Steps | Test Data | Expected Result | Priority |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -154,7 +153,7 @@
 
 ## BP-06 – Driver tiếp nhận và phản hồi yêu cầu chuyến
 
-**Traceability:** FR22–FR25 → AC22–AC25
+
 
 | Test Case ID | Test Scenario | Nhóm kiểm thử | Test Case | Preconditions | Test Steps | Test Data | Expected Result | Priority |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -181,7 +180,7 @@
 
 ## BP-07 – Theo dõi và thực hiện Trip
 
-**Traceability:** FR26–FR32 → AC26–AC32
+
 
 | Test Case ID | Test Scenario | Nhóm kiểm thử | Test Case | Preconditions | Test Steps | Test Data | Expected Result | Priority |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -208,7 +207,7 @@
 
 ## BP-08 – Tính cước và thanh toán
 
-**Traceability:** FR33–FR38 → AC33–AC38
+
 
 | Test Case ID | Test Scenario | Nhóm kiểm thử | Test Case | Preconditions | Test Steps | Test Data | Expected Result | Priority |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -235,7 +234,7 @@
 
 ## BP-09 – Lịch sử chuyến và đánh giá Driver
 
-**Traceability:** FR39–FR42 → AC39–AC42
+
 
 | Test Case ID | Test Scenario | Nhóm kiểm thử | Test Case | Preconditions | Test Steps | Test Data | Expected Result | Priority |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
